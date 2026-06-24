@@ -1,0 +1,17 @@
+# 機密：絕對別上 GitHub
+.env
+*.token
+*token*
+secrets.*
+
+# Python（這個前端用不到，但放著保險）
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 編輯器/系統
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
