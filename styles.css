@@ -59,9 +59,12 @@ body{
   box-shadow:var(--shadow);margin-top:16px;padding:20px 18px 18px;overflow:hidden;
 }
 .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--accent,#ccc);}
-.name-row{display:flex;align-items:baseline;gap:10px;}
+.name-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.nm{display:flex;align-items:baseline;gap:8px;min-width:0;}
 .name{font-size:25px;font-weight:800;}
 .code{font-size:14px;color:var(--sub);}
+.today{font-size:15px;font-weight:800;white-space:nowrap;padding:4px 10px;border-radius:999px;background:#f3f5f9;}
+.today.gain{color:var(--gain);} .today.loss{color:var(--loss);}
 .hero{margin:12px 0 2px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
 .pl{font-size:34px;font-weight:900;line-height:1.1;}
 .pl-pct{font-size:18px;font-weight:800;}
@@ -82,7 +85,22 @@ body{
 
 .status{margin-top:14px;display:flex;flex-direction:column;gap:8px;}
 .chip{background:#f3f5f9;border-radius:12px;padding:10px 13px;font-size:16px;font-weight:600;line-height:1.4;}
-.missing{color:var(--sub);font-size:15px;margin-top:10px;}
+.missing{color:var(--sub);font-size:15px;margin-top:10px;line-height:1.6;}
+.missing-card::before{background:#cbd2dc;}
+
+/* 白話提醒 */
+.alerts{margin-top:12px;display:flex;flex-direction:column;gap:7px;}
+.alert{background:#fff6e5;color:#8a5300;border-radius:12px;padding:10px 13px;font-size:15.5px;font-weight:700;line-height:1.4;}
+
+/* 資產配置 */
+.alloc-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-top:12px;padding:18px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.donut-wrap{flex:0 0 auto;}
+.donut{width:150px;height:150px;display:block;}
+.legend{flex:1;min-width:160px;display:flex;flex-direction:column;gap:9px;}
+.leg{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:700;}
+.leg .dot{width:14px;height:14px;border-radius:4px;flex:0 0 auto;}
+.leg-name{flex:1;}
 
 .empty{
   text-align:center;color:var(--sub);padding:46px 18px;line-height:1.8;font-size:17px;
@@ -95,6 +113,8 @@ body{
 .hot-top{display:flex;justify-content:space-between;align-items:baseline;gap:6px;}
 .hot-name{font-size:18px;font-weight:800;}
 .hot-price{font-size:18px;font-weight:800;white-space:nowrap;}
+.hot-today{margin-top:4px;}
+.hot-today .today{font-size:13px;padding:3px 8px;}
 .hot-spark{margin:8px 0;}
 .hot-spark svg{display:block;width:100%;height:36px;}
 .hot-spark .ln{fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;}
