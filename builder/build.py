@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""StockMeow 資料產生器（自包含）：抓近期行情 + 今日熱門 → data.json + names.json。
+
+可在 GitHub Actions 雲端跑，也能本機跑。需要環境變數 FINMIND_TOKEN。
+輸出寫到 OUT_DIR（預設＝這支的上一層＝repo 根，static 檔所在）。
+只用 FinMind 單檔查詢（免費版允許）＋證交所 OpenAPI（熱門榜，免 token）。
+"""
+import os
+import json
+import urllib.request
+from datetime import date, timedelta
+from pathlib import Path
+
+import pandas as pd
+from FinMind.data import DataLoader
+
+ROOT = Path(__file__).resolve().parent.parent              # repo 根
+OUT_DIR = Path(os.getenv("DASHBOARD_OUT", str(ROOT)))      # data.json / names.json 寫這
+WATCHLIST_FILE = Path(__file__).resolve().parent / "watchlist.txt"
+DEFAULT_STOCKS = ["3481", "6116"]
+STOCK_NAMES_OVERRIDE = {}
+
+WINDOW = 5; MONTH_DAYS = 20; DEADZONE = 0.20; SPARK_DAYS = 30; RECENT_DAYS = 75; HOT_N = 10
+TWSE_TOP20 = "https://openapi.twse.com.tw/v1/exchangeReport/MI_INDEX20"
+
+
+def log(m):
+    print(m, flush=True)
+
+
+def classify_big_player(net):
+    s = pd.Series(net).dropna().tail(WINDOW)
+    if s.empty:
+        return "flat"
+    gross = float(s.abs().sum())
+    if gross == 0:
+        return "flat"
+    r = float(s.sum()) / gross
+    return "buy" if r >= DEADZONE else ("sell" if r <= -DEADZONE else "flat")
+
+
+def month_change_pct(close):
+    s = pd.Series(close).dropna()
+    if len(s) < 2:
+        return 0.0
+    prev = float(s.iloc[-(MONTH_DAYS + 1)]) if len(s) > MONTH_DAYS else float(s.iloc[0])
+    return 0.0 if prev == 0 else round((float(s.iloc[-1]) / prev - 1) * 100, 1)
+
+
+def top_volume_stocks(n=HOT_N):
+    try:
+        with urllib.request.urlopen(TWSE_TOP20, timeout=25) as r:
+            data = json.loads(r.read().decode("utf-8"))
+    except Exception as e:
+        log(f"[warn] 證交所熱門股抓取失敗：{e!r}")
+        return []
+    rows = []
+    for x in data:
+        c = str(x.get("Code", "")).strip()
+        if len(c) == 4 and c.isdigit() and c[0] != "0":   # 4 碼非0開頭＝個股（濾掉 ETF/權證）
+            rows.append((c, str(x.get("Name", "")).strip(), int(x.get("TradeVolume", 0) or 0)))
+    rows.sort(key=lambda t: t[2], reverse=True)
+    return rows[:n]
+
+
+def fetch_recent(dl, sid, start, end):
+    price = dl.taiwan_stock_daily(stock_id=sid, start_date=start, end_date=end)
+    if price is None or len(price) == 0 or "close" not in price.columns:
+        return None
+    df = price[["date", "close"]].copy()
+    inst = dl.taiwan_stock_institutional_investors(stock_id=sid, start_date=start, end_date=end)
+    if inst is not None and len(inst):
+        inst = inst.copy()
+        inst["net"] = (inst["buy"] - inst["sell"]) / 1000.0
+        tot = inst.groupby("date")["net"].sum().rename("inst_total_net").reset_index()
+        df = df.merge(tot, on="date", how="left")
+    if "inst_total_net" not in df.columns:
+        df["inst_total_net"] = 0.0
+    df["inst_total_net"] = df["inst_total_net"].fillna(0.0)
+    return df.sort_values("date")
+
+
+def make_record(name, df):
+    if df is None or df.empty or "close" not in df.columns:
+        return None, None
+    closes = df["close"].dropna()
+    price = float(closes.iloc[-1])
+    if price <= 0:
+        return None, None
+    day = round((float(closes.iloc[-1]) / float(closes.iloc[-2]) - 1) * 100, 2) if len(closes) >= 2 else 0.0
+    rec = {"name": name, "price": price,
+           "big_player": classify_big_player(df["inst_total_net"]),
+           "day_change_pct": day, "month_change_pct": month_change_pct(df["close"]),
+           "buzz": None, "spark": [round(float(v), 2) for v in closes.tail(SPARK_DAYS)]}
+    return str(df["date"].iloc[-1]), rec
+
+
+def load_watchlist():
+    if WATCHLIST_FILE.exists():
+        codes = []
+        for line in WATCHLIST_FILE.read_text(encoding="utf-8").splitlines():
+            line = line.split("#")[0].strip()
+            if line:
+                codes.append(line)
+        if codes:
+            return codes
+    return DEFAULT_STOCKS
+
+
+def main():
+    token = os.getenv("FINMIND_TOKEN", "")
+    dl = DataLoader()
+    if token:
+        dl.login_by_token(api_token=token)
+    else:
+        log("[warn] 沒有 FINMIND_TOKEN，匿名額度很容易被限流")
+
+    names = {}
+    try:
+        info = dl.taiwan_stock_info()
+        names = dict(zip(info["stock_id"].astype(str), info["stock_name"]))
+    except Exception as e:
+        log(f"[warn] 取股名失敗：{e!r}")
+    names.update(STOCK_NAMES_OVERRIDE)
+
+    hot = top_volume_stocks(HOT_N)
+    hot_codes = [c for c, _, _ in hot]
+    for c, n, _ in hot:
+        names.setdefault(c, n)
+    log("今日熱門：" + ("、".join(f"{n}{c}" for c, n, _ in hot) or "（無）"))
+
+    ids = list(dict.fromkeys(load_watchlist() + hot_codes))
+    end = date.today().isoformat()
+    start = (date.today() - timedelta(days=RECENT_DAYS)).isoformat()
+    log(f"近期抓取 {start} ~ {end}，共 {len(ids)} 檔")
+
+    stocks, dates = {}, []
+    for sid in ids:
+        d, rec = make_record(names.get(sid, sid), fetch_recent(dl, sid, start, end))
+        if rec:
+            stocks[sid] = rec
+            dates.append(d)
+            log(f"{sid} {rec['name']}: {rec['price']} | 今日 {rec['day_change_pct']}% | 大戶 {rec['big_player']}")
+        else:
+            log(f"[warn] {sid} 無資料，跳過")
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    if names:
+        (OUT_DIR / "names.json").write_text(json.dumps(names, ensure_ascii=False), encoding="utf-8")
+    if not stocks:
+        log("[error] 沒有任何股票成功產出，data.json 不寫出")
+        raise SystemExit(1)
+    out = {"updated": max(dates), "is_sample": False,
+           "hot": [c for c in hot_codes if c in stocks], "stocks": stocks}
+    (OUT_DIR / "data.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+    log(f"完成：{len(stocks)} 檔（含熱門 {len(out['hot'])}）→ {OUT_DIR}\\data.json, names.json")
+
+
+if __name__ == "__main__":
+    main()
