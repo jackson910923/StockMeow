@@ -51,10 +51,15 @@
         65.0,
         67.0
       ],
-      "sentiment": {
-        "posts": 15,
-        "bull": 7,
-        "bear": 0
+      "notice": {
+        "on_notice": false,
+        "consec": 0,
+        "in10": 5,
+        "to_disp": 1,
+        "up": 87.12,
+        "up_reach": false,
+        "down": 44.88,
+        "down_reach": false
       }
     },
     "6116": {
@@ -96,9 +101,19 @@
         18.25,
         19.25
       ],
+      "notice": {
+        "on_notice": false,
+        "consec": 0,
+        "in10": 1,
+        "to_disp": 3,
+        "up": 26.33,
+        "up_reach": false,
+        "down": 13.57,
+        "down_reach": false
+      },
       "sentiment": {
         "posts": 1,
-        "bull": 9,
+        "bull": 10,
         "bear": 0
       }
     },
@@ -141,9 +156,19 @@
         164.0,
         164.0
       ],
+      "notice": {
+        "on_notice": false,
+        "consec": 0,
+        "in10": 0,
+        "to_disp": 3,
+        "up": 211.2,
+        "up_reach": false,
+        "down": 118.89,
+        "down_reach": false
+      },
       "sentiment": {
         "posts": 10,
-        "bull": 6,
+        "bull": 4,
         "bear": 0
       }
     },
@@ -186,9 +211,19 @@
         27.95,
         30.6
       ],
+      "notice": {
+        "on_notice": false,
+        "consec": 0,
+        "in10": 1,
+        "to_disp": 3,
+        "up": 40.85,
+        "up_reach": false,
+        "down": 21.05,
+        "down_reach": false
+      },
       "sentiment": {
         "posts": 9,
-        "bull": 11,
+        "bull": 9,
         "bear": 0
       }
     },
@@ -231,9 +266,19 @@
         78.3,
         78.9
       ],
+      "notice": {
+        "on_notice": false,
+        "consec": 0,
+        "in10": 0,
+        "to_disp": 3,
+        "up": 107.71,
+        "up_reach": false,
+        "down": 55.49,
+        "down_reach": false
+      },
       "sentiment": {
         "posts": 12,
-        "bull": 8,
+        "bull": 9,
         "bear": 0
       }
     },
@@ -276,10 +321,20 @@
         206.5,
         203.0
       ],
+      "notice": {
+        "on_notice": false,
+        "consec": 0,
+        "in10": 3,
+        "to_disp": 3,
+        "up": 277.5,
+        "up_reach": false,
+        "down": 161.5,
+        "down_reach": false
+      },
       "sentiment": {
         "posts": 8,
         "bull": 7,
-        "bear": 1
+        "bear": 0
       }
     },
     "2337": {
@@ -321,10 +376,20 @@
         162.5,
         158.5
       ],
+      "notice": {
+        "on_notice": false,
+        "consec": 0,
+        "in10": 1,
+        "to_disp": 3,
+        "up": 231.88,
+        "up_reach": false,
+        "down": 126.14,
+        "down_reach": false
+      },
       "sentiment": {
         "posts": 8,
         "bull": 7,
-        "bear": 3
+        "bear": 0
       }
     },
     "1718": {
@@ -366,9 +431,19 @@
         11.15,
         12.25
       ],
+      "notice": {
+        "on_notice": false,
+        "consec": 0,
+        "in10": 0,
+        "to_disp": 3,
+        "up": 12.91,
+        "up_reach": true,
+        "down": 6.65,
+        "down_reach": false
+      },
       "sentiment": {
         "posts": 2,
-        "bull": 5,
+        "bull": 7,
         "bear": 0
       }
     },
@@ -411,10 +486,20 @@
         449.0,
         453.0
       ],
+      "notice": {
+        "on_notice": false,
+        "consec": 0,
+        "in10": 2,
+        "to_disp": 3,
+        "up": 631.25,
+        "up_reach": false,
+        "down": 375.24,
+        "down_reach": false
+      },
       "sentiment": {
         "posts": 10,
         "bull": 9,
-        "bear": 1
+        "bear": 0
       }
     }
   }

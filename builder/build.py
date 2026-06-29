@@ -134,13 +134,34 @@ def main():
     start = (date.today() - timedelta(days=RECENT_DAYS)).isoformat()
     log(f"近期抓取 {start} ~ {end}，共 {len(ids)} 檔")
 
+    # 大盤(加權指數)抓一次，給注意/處置風險用
+    tx_map = {}
+    try:
+        tx = dl.taiwan_stock_total_return_index(index_id="TAIEX", start_date=start, end_date=end)
+        tx_map = dict(zip(tx["date"].astype(str), tx["price"]))
+    except Exception as e:
+        log(f"[warn] 大盤指數抓取失敗，注意/處置略過：{e!r}")
+
     stocks, dates = {}, []
     for sid in ids:
-        d, rec = make_record(names.get(sid, sid), fetch_recent(dl, sid, start, end))
+        df = fetch_recent(dl, sid, start, end)
+        d, rec = make_record(names.get(sid, sid), df)
         if rec:
+            # 注意/處置風險（最佳努力）
+            if tx_map and df is not None:
+                try:
+                    from notice import compute_notice
+                    rows = [(dt, cl, tx_map[dt]) for dt, cl in
+                            zip(df["date"].astype(str), df["close"]) if dt in tx_map]
+                    nt = compute_notice(rows)
+                    if nt:
+                        rec["notice"] = nt
+                except Exception as e:
+                    log(f"[warn] {sid} 注意/處置略過：{e!r}")
             stocks[sid] = rec
             dates.append(d)
-            log(f"{sid} {rec['name']}: {rec['price']} | 今日 {rec['day_change_pct']}% | 大戶 {rec['big_player']}")
+            log(f"{sid} {rec['name']}: {rec['price']} | 今日 {rec['day_change_pct']}% | 大戶 {rec['big_player']}"
+                + (f" | 注意{rec['notice']['consec']}連/{rec['notice']['in10']}(10日) 距處置{rec['notice']['to_disp']}" if rec.get("notice") else ""))
         else:
             log(f"[warn] {sid} 無資料，跳過")
 

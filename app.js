@@ -7,8 +7,8 @@ const FALLBACK_DATA = {
   updated: "2026-06-26", is_sample: true,
   hot: ["2330","2317"],
   stocks: {
-    "3481": { name:"群創",   price:64.40,  big_player:"sell", day_change_pct:-2.1, month_change_pct:28, buzz:"high",  spark:[48,50,52,49,53,56,55,58,60,59,62,64.4], sentiment:{posts:125,bull:24,bear:7} },
-    "6116": { name:"彩晶",   price:18.80,  big_player:"buy",  day_change_pct:1.3,  month_change_pct:-5, buzz:"quiet", spark:[20,19.5,19,18.6,18.8,18.2,18.5,18.9,18.3,18.6,18.7,18.8], sentiment:{posts:19,bull:38,bear:2} },
+    "3481": { name:"群創",   price:64.40,  big_player:"sell", day_change_pct:-2.1, month_change_pct:28, buzz:"high",  spark:[48,50,52,49,53,56,55,58,60,59,62,64.4], sentiment:{posts:125,bull:24,bear:7}, notice:{on_notice:false,consec:0,in10:5,to_disp:1,up:85.0,up_reach:false,down:43.8,down_reach:false} },
+    "6116": { name:"彩晶",   price:18.80,  big_player:"buy",  day_change_pct:1.3,  month_change_pct:-5, buzz:"quiet", spark:[20,19.5,19,18.6,18.8,18.2,18.5,18.9,18.3,18.6,18.7,18.8], sentiment:{posts:19,bull:38,bear:2}, notice:{on_notice:false,consec:0,in10:1,to_disp:3,up:24.8,up_reach:false,down:12.8,down_reach:false} },
     "2330": { name:"台積電", price:1085.0, big_player:"buy",  day_change_pct:0.8,  month_change_pct:6,  buzz:"high",  spark:[1020,1035,1010,1050,1060,1045,1070,1065,1080,1075,1082,1085] },
     "2317": { name:"鴻海",   price:203.5,  big_player:"flat", day_change_pct:-0.5, month_change_pct:-2, buzz:"quiet", spark:[208,206,209,205,207,204,206,203,205,202,204,203.5] }
   }
@@ -109,6 +109,25 @@ function signalSummary(r){            // 綜合參考：大戶(外資/法人) + 
   if(bp < 0 && st < 0) return "📉 大戶在賣、討論偏空，兩個訊號一致偏空，宜觀望";
   return `⚖️ 大戶在${bp>0?"買":"賣"}、討論偏${st>0?"多":"空"}，方向分歧，再觀察`;
 }
+function noticeBox(n){              // 注意/處置風險（持股卡用，完整）
+  if(!n) return "";
+  const danger = n.to_disp===0 || n.on_notice;
+  const warn = !danger && (n.to_disp<=1 || n.up_reach || n.down_reach);
+  const cls = danger ? "nrisk-hi" : warn ? "nrisk-mid" : "nrisk-lo";
+  let s1;
+  if(n.to_disp===0)      s1 = "🚨 已達處置累積標準（連3次或10日6次）";
+  else if(n.in10>0)      s1 = `近10日 ${n.in10} 次注意${n.consec>1?`（連續${n.consec}天）`:""}，再 ${n.to_disp} 次到處置`;
+  else                   s1 = "目前無注意累積";
+  const reach = (n.up_reach||n.down_reach) ? "（明天可能觸發）" : "（明天漲跌停都碰不到）";
+  const s2 = `明天 漲過 ${num(n.up)} 或 跌破 ${num(n.down)} 會被列注意 ${reach}`;
+  return `<div class="notice ${cls}"><div class="nrow">📋 ${s1}</div><div class="nrow nsub">${s2}</div></div>`;
+}
+function miniNotice(n){             // 熱門卡用，精簡：只在接近處置時出現
+  if(!n) return null;
+  if(n.to_disp===0) return "🚨 處置標準";
+  if(n.to_disp<=1)  return `⚠️ 距處置${n.to_disp}`;
+  return null;
+}
 function todayBadge(day){
   if(day==null) return "";
   const cls = gainClass(day);
@@ -163,7 +182,7 @@ function compute(h){
   if(s.big_player==="sell")  alerts.push("大戶最近在賣，可留意");
   return { id:h.stock_id, name, shares, cost, price:s.price, mv, profit, pct,
            big_player:s.big_player, month:s.month_change_pct, buzz:s.buzz,
-           spark:s.spark, day:s.day_change_pct, alerts, sentiment:s.sentiment };
+           spark:s.spark, day:s.day_change_pct, alerts, sentiment:s.sentiment, notice:s.notice };
 }
 
 // ── 畫面 ─────────────────────────────────────────────
@@ -217,6 +236,7 @@ function card(r){
     ? `<div class="alerts">${r.alerts.map(a=>`<div class="alert">⚠️ ${a}</div>`).join("")}</div>` : "";
   const sig = signalSummary(r);
   const signalBlock = sig ? `<div class="signal">${sig}<span class="sig-note">參考</span></div>` : "";
+  const noticeBlk = noticeBox(r.notice);
   return `<section class="card ${accentClass(r.profit)}">
     <div class="name-row">
       <div class="nm"><span class="name">${r.name}</span> <span class="code">${r.id}</span></div>
@@ -228,6 +248,7 @@ function card(r){
     </div>
     ${signalBlock}
     ${alertBlock}
+    ${noticeBlk}
     ${sparkBlock}
     <div class="grid">
       <div class="cell"><div class="label">我有幾張</div><div class="value">${r.shares} 張</div></div>
@@ -270,7 +291,7 @@ function hotCard(code){
   const held = holdings.some(h=>h.stock_id===code);
   const spark = sparkline(s.spark);
   const dir = (Array.isArray(s.spark)&&s.spark.length>1) ? s.spark[s.spark.length-1]-s.spark[0] : 0;
-  const chips = [bigPlayerText(s.big_player), miniMonth(s.month_change_pct), miniSentiment(s.sentiment)]
+  const chips = [bigPlayerText(s.big_player), miniMonth(s.month_change_pct), miniSentiment(s.sentiment), miniNotice(s.notice)]
                 .filter(Boolean).map(t=>`<span class="mini-chip">${t}</span>`).join("");
   const action = held
     ? `<span class="held-tag">✓ 已持有</span>`

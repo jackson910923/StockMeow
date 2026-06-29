@@ -99,6 +99,14 @@ body{
 .signal .sig-note{margin-left:auto;font-size:12px;font-weight:800;color:#6b7280;
   background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 8px;flex:0 0 auto;}
 
+/* 注意/處置風險 */
+.notice{margin-top:12px;border-radius:12px;padding:10px 13px;}
+.notice .nrow{font-size:15.5px;font-weight:700;line-height:1.45;}
+.notice .nsub{font-size:13px;font-weight:600;color:var(--sub);margin-top:3px;}
+.nrisk-hi{background:#fdecec;border-left:4px solid var(--gain);} .nrisk-hi .nrow{color:#9a2530;}
+.nrisk-mid{background:#fff6e5;border-left:4px solid #f0a020;} .nrisk-mid .nrow{color:#7a5200;}
+.nrisk-lo{background:#f3f5f9;border-left:4px solid #cbd2dc;}
+
 /* 免責 */
 .disclaimer{margin:26px 4px 10px;font-size:13px;color:var(--sub);line-height:1.7;text-align:center;}
 
