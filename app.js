@@ -95,6 +95,20 @@ function sentimentText(s){
   }
   return t;
 }
+function marketTilt(s){               // 情緒方向：1=偏多 -1=偏空 0=不明顯
+  if(!s) return 0;
+  const b = s.bull||0, r = s.bear||0;
+  if(b + r < 3) return 0;
+  return b>r ? 1 : r>b ? -1 : 0;
+}
+function signalSummary(r){            // 綜合參考：大戶(外資/法人) + 情緒，兩個都明確才下判斷
+  const bp = r.big_player==="buy" ? 1 : r.big_player==="sell" ? -1 : 0;
+  const st = marketTilt(r.sentiment);
+  if(bp === 0 || st === 0) return null;            // 任一不明確就不下綜合判斷
+  if(bp > 0 && st > 0) return "📈 大戶在買、討論偏多，兩個訊號一致偏多，可留意";
+  if(bp < 0 && st < 0) return "📉 大戶在賣、討論偏空，兩個訊號一致偏空，宜觀望";
+  return `⚖️ 大戶在${bp>0?"買":"賣"}、討論偏${st>0?"多":"空"}，方向分歧，再觀察`;
+}
 function todayBadge(day){
   if(day==null) return "";
   const cls = gainClass(day);
@@ -201,6 +215,8 @@ function card(r){
     ? `<div class="spark ${gainClass(trendDir)}"><div class="spark-cap">最近 ${r.spark.length} 天走勢</div>${sparkSvg}</div>` : "";
   const alertBlock = (r.alerts&&r.alerts.length)
     ? `<div class="alerts">${r.alerts.map(a=>`<div class="alert">⚠️ ${a}</div>`).join("")}</div>` : "";
+  const sig = signalSummary(r);
+  const signalBlock = sig ? `<div class="signal">${sig}<span class="sig-note">參考</span></div>` : "";
   return `<section class="card ${accentClass(r.profit)}">
     <div class="name-row">
       <div class="nm"><span class="name">${r.name}</span> <span class="code">${r.id}</span></div>
@@ -210,6 +226,7 @@ function card(r){
       <div class="pl ${cls}">${word} ${money(Math.abs(r.profit))}</div>
       <div class="pl-pct ${cls}">(${sign}${Math.abs(Math.round(r.pct))}%)</div>
     </div>
+    ${signalBlock}
     ${alertBlock}
     ${sparkBlock}
     <div class="grid">
