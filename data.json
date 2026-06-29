@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-26",
+  "updated": "2026-06-29",
   "is_sample": false,
   "hot": [
     "3481",
@@ -14,13 +14,12 @@
   "stocks": {
     "3481": {
       "name": "群創",
-      "price": 65.0,
+      "price": 67.0,
       "big_player": "sell",
-      "day_change_pct": -8.32,
-      "month_change_pct": 40.1,
+      "day_change_pct": 3.08,
+      "month_change_pct": 31.4,
       "buzz": null,
       "spark": [
-        36.1,
         38.7,
         37.45,
         36.95,
@@ -49,23 +48,23 @@
         66.0,
         69.4,
         70.9,
-        65.0
+        65.0,
+        67.0
       ],
       "sentiment": {
-        "posts": 67,
-        "bull": 5,
-        "bear": 1
+        "posts": 43,
+        "bull": 6,
+        "bear": 2
       }
     },
     "6116": {
       "name": "彩晶",
-      "price": 18.25,
+      "price": 19.25,
       "big_player": "sell",
-      "day_change_pct": -6.41,
-      "month_change_pct": 17.4,
+      "day_change_pct": 5.48,
+      "month_change_pct": 12.6,
       "buzz": null,
       "spark": [
-        10.25,
         10.35,
         10.15,
         9.85,
@@ -94,11 +93,12 @@
         19.0,
         19.4,
         19.5,
-        18.25
+        18.25,
+        19.25
       ],
       "sentiment": {
-        "posts": 6,
-        "bull": 13,
+        "posts": 3,
+        "bull": 11,
         "bear": 1
       }
     },
@@ -106,11 +106,10 @@
       "name": "聯電",
       "price": 164.0,
       "big_player": "sell",
-      "day_change_pct": -8.12,
-      "month_change_pct": 15.5,
+      "day_change_pct": 0.0,
+      "month_change_pct": 13.5,
       "buzz": null,
       "spark": [
-        110.0,
         111.0,
         113.0,
         108.0,
@@ -139,18 +138,23 @@
         170.0,
         178.0,
         178.5,
+        164.0,
         164.0
-      ]
+      ],
+      "sentiment": {
+        "posts": 50,
+        "bull": 9,
+        "bear": 0
+      }
     },
     "2409": {
       "name": "友達",
-      "price": 27.95,
+      "price": 30.6,
       "big_player": "sell",
-      "day_change_pct": -8.06,
-      "month_change_pct": 31.8,
+      "day_change_pct": 9.48,
+      "month_change_pct": 33.0,
       "buzz": null,
       "spark": [
-        19.05,
         19.25,
         19.15,
         18.75,
@@ -179,18 +183,18 @@
         29.05,
         30.5,
         30.4,
-        27.95
+        27.95,
+        30.6
       ]
     },
     "6770": {
       "name": "力積電",
-      "price": 78.3,
+      "price": 78.9,
       "big_player": "flat",
-      "day_change_pct": -5.89,
-      "month_change_pct": -3.0,
+      "day_change_pct": 0.77,
+      "month_change_pct": -11.0,
       "buzz": null,
       "spark": [
-        62.8,
         62.0,
         58.5,
         57.8,
@@ -219,18 +223,18 @@
         78.6,
         85.7,
         83.2,
-        78.3
+        78.3,
+        78.9
       ]
     },
     "2344": {
       "name": "華邦電",
-      "price": 206.5,
-      "big_player": "sell",
-      "day_change_pct": -5.92,
-      "month_change_pct": 43.4,
+      "price": 203.0,
+      "big_player": "flat",
+      "day_change_pct": -1.69,
+      "month_change_pct": 28.5,
       "buzz": null,
       "spark": [
-        129.5,
         130.5,
         117.5,
         115.5,
@@ -259,18 +263,18 @@
         211.5,
         205.0,
         219.5,
-        206.5
+        206.5,
+        203.0
       ]
     },
     "2337": {
       "name": "旺宏",
-      "price": 162.5,
+      "price": 158.5,
       "big_player": "flat",
-      "day_change_pct": 0.62,
-      "month_change_pct": 1.6,
+      "day_change_pct": -2.46,
+      "month_change_pct": -4.8,
       "buzz": null,
       "spark": [
-        162.5,
         160.0,
         144.0,
         141.0,
@@ -299,18 +303,18 @@
         172.0,
         172.0,
         161.5,
-        162.5
+        162.5,
+        158.5
       ]
     },
     "1718": {
       "name": "中纖",
-      "price": 11.15,
+      "price": 12.25,
       "big_player": "buy",
-      "day_change_pct": 9.85,
-      "month_change_pct": 74.2,
+      "day_change_pct": 9.87,
+      "month_change_pct": 85.0,
       "buzz": null,
       "spark": [
-        6.36,
         6.58,
         6.51,
         6.43,
@@ -339,18 +343,18 @@
         9.25,
         9.23,
         10.15,
-        11.15
+        11.15,
+        12.25
       ]
     },
     "2408": {
       "name": "南亞科",
-      "price": 449.0,
-      "big_player": "flat",
-      "day_change_pct": -5.87,
-      "month_change_pct": 38.6,
+      "price": 453.0,
+      "big_player": "sell",
+      "day_change_pct": 0.89,
+      "month_change_pct": 30.5,
       "buzz": null,
       "spark": [
-        311.5,
         305.0,
         274.5,
         275.0,
@@ -379,7 +383,8 @@
         454.5,
         443.5,
         477.0,
-        449.0
+        449.0,
+        453.0
       ]
     }
   }
