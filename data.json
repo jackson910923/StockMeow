@@ -52,9 +52,9 @@
         67.0
       ],
       "sentiment": {
-        "posts": 43,
-        "bull": 6,
-        "bear": 2
+        "posts": 15,
+        "bull": 7,
+        "bear": 0
       }
     },
     "6116": {
@@ -97,9 +97,9 @@
         19.25
       ],
       "sentiment": {
-        "posts": 3,
-        "bull": 11,
-        "bear": 1
+        "posts": 1,
+        "bull": 9,
+        "bear": 0
       }
     },
     "2303": {
@@ -142,15 +142,15 @@
         164.0
       ],
       "sentiment": {
-        "posts": 50,
-        "bull": 9,
+        "posts": 10,
+        "bull": 6,
         "bear": 0
       }
     },
     "2409": {
       "name": "友達",
       "price": 30.6,
-      "big_player": "sell",
+      "big_player": "flat",
       "day_change_pct": 9.48,
       "month_change_pct": 33.0,
       "buzz": null,
@@ -187,15 +187,15 @@
         30.6
       ],
       "sentiment": {
-        "posts": 21,
-        "bull": 9,
+        "posts": 9,
+        "bull": 11,
         "bear": 0
       }
     },
     "6770": {
       "name": "力積電",
       "price": 78.9,
-      "big_player": "flat",
+      "big_player": "sell",
       "day_change_pct": 0.77,
       "month_change_pct": -11.0,
       "buzz": null,
@@ -232,9 +232,9 @@
         78.9
       ],
       "sentiment": {
-        "posts": 15,
-        "bull": 9,
-        "bear": 1
+        "posts": 12,
+        "bull": 8,
+        "bear": 0
       }
     },
     "2344": {
@@ -277,8 +277,8 @@
         203.0
       ],
       "sentiment": {
-        "posts": 30,
-        "bull": 10,
+        "posts": 8,
+        "bull": 7,
         "bear": 1
       }
     },
@@ -322,9 +322,9 @@
         158.5
       ],
       "sentiment": {
-        "posts": 9,
-        "bull": 8,
-        "bear": 2
+        "posts": 8,
+        "bull": 7,
+        "bear": 3
       }
     },
     "1718": {
@@ -367,8 +367,8 @@
         12.25
       ],
       "sentiment": {
-        "posts": 3,
-        "bull": 8,
+        "posts": 2,
+        "bull": 5,
         "bear": 0
       }
     },
@@ -412,9 +412,9 @@
         453.0
       ],
       "sentiment": {
-        "posts": 12,
-        "bull": 8,
-        "bear": 2
+        "posts": 10,
+        "bull": 9,
+        "bear": 1
       }
     }
   }
