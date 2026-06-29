@@ -71,6 +71,13 @@ function miniMonth(p){
   if(p==null) return null;
   return "月 " + (p>=0?"+":"−") + Math.abs(Math.round(p)) + "%";
 }
+function miniSentiment(s){            // 熱門卡用的精簡情緒：「🔥 50篇 多」
+  if(!s || s.posts==null) return null;
+  const hot = s.posts>=40 ? "🔥" : (s.posts>=8 ? "💬" : "😴");
+  const b = s.bull||0, r = s.bear||0;
+  const dir = (b+r>=3) ? (b>r ? " 多" : r>b ? " 空" : "") : "";
+  return `${hot} ${s.posts}篇${dir}`;
+}
 function buzzText(v){
   if(v==="high")  return "🔥 最近網路上討論很熱";
   if(v==="quiet") return "😴 最近網路上很安靜";
@@ -246,7 +253,7 @@ function hotCard(code){
   const held = holdings.some(h=>h.stock_id===code);
   const spark = sparkline(s.spark);
   const dir = (Array.isArray(s.spark)&&s.spark.length>1) ? s.spark[s.spark.length-1]-s.spark[0] : 0;
-  const chips = [bigPlayerText(s.big_player), miniMonth(s.month_change_pct)]
+  const chips = [bigPlayerText(s.big_player), miniMonth(s.month_change_pct), miniSentiment(s.sentiment)]
                 .filter(Boolean).map(t=>`<span class="mini-chip">${t}</span>`).join("");
   const action = held
     ? `<span class="held-tag">✓ 已持有</span>`

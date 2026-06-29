@@ -144,11 +144,12 @@ def main():
         else:
             log(f"[warn] {sid} 無資料，跳過")
 
-    # 情緒（最佳努力）：只爬 watchlist=你的持股、不爬熱門；只存彙總統計；失敗不影響其他資料。
+    # 情緒（最佳努力）：爬 data.json 裡全部股票＝今日熱門 ∪ watchlist(持股)，
+    # 只存彙總統計；失敗不影響其他資料。
     try:
         from sentiment import fetch_sentiment
-        watch = [c for c in load_watchlist() if c in stocks]
-        for sid, sent in fetch_sentiment(watch).items():
+        targets = list(stocks)
+        for sid, sent in fetch_sentiment(targets).items():
             if sid in stocks and sent.get("posts") is not None:
                 stocks[sid]["sentiment"] = sent
                 log(f"情緒 {sid}: {sent}")
