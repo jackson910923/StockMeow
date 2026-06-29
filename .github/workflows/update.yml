@@ -5,6 +5,11 @@ on:
     # UTC 09:30＝台灣 17:30（收盤後）。週一～週五跑。
     - cron: "30 9 * * 1-5"
   workflow_dispatch: {}        # 也能在 Actions 頁面手動按一下觸發
+  push:                        # 改到 build 程式就自動跑一次（順便當 CI 驗證）
+    branches: [main]
+    paths:
+      - "builder/**"
+      - ".github/workflows/update.yml"
 
 permissions:
   contents: write              # 讓 Action 能 push 更新後的 data.json

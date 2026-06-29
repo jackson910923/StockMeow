@@ -28,9 +28,9 @@ def _one(page, sid):
     page.goto(f"https://www.cmoney.tw/forum/stock/{sid}",
               wait_until="domcontentloaded", timeout=30000)
     page.wait_for_timeout(6000)                       # 等它拿到匿名 token、載入文章
-    for _ in range(3):
-        page.mouse.wheel(0, 4000)
-        page.wait_for_timeout(2000)
+    for _ in range(8):                                # 多捲幾次、載入更多貼文 → 多空樣本更有代表性
+        page.mouse.wheel(0, 5000)
+        page.wait_for_timeout(1800)
 
     seen, bull, bear = set(), 0, 0
     for a in arts:
