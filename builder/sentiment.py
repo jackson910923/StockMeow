@@ -43,20 +43,26 @@ def _one(page, sid):
     page.on("response", on_response)
     page.goto(f"https://www.cmoney.tw/forum/stock/{sid}",
               wait_until="domcontentloaded", timeout=30000)
-    for _ in range(20):                       # 等 token 與今日發文數
-        if tok["v"] and count["n"] is not None:
+    for _ in range(20):                       # 等頁面拿到匿名 token
+        if tok["v"]:
             break
         page.wait_for_timeout(1000)
 
-    # 方向：直接抓文章（limit 上限 20、需 x-version:3.0）＋頁面自己載入的，合併去重
-    arts = list(arts_cap)
+    arts = list(arts_cap)                      # 頁面自己載入的（備援）
+    posts = count["n"]                         # on_response 攔到的（備援）
     if tok["v"]:
-        headers = {"authorization": tok["v"], "x-version": "3.0",
-                   "accept": "application/json, text/plain, */*"}
+        base = "https://www.cmoney.tw/api/mach/api"
+        acc = "application/json, text/plain, */*"
+        # 兩支端點的 headers 不同：文章要 x-version:3.0；發文數不帶 x-version
         r = page.evaluate(_FETCH_JS, {
-            "url": f"https://www.cmoney.tw/api/mach/api/Article/Stocks/{sid}/AllHottest?limit=20",
-            "headers": headers})
+            "url": f"{base}/Article/Stocks/{sid}/AllHottest?limit=20",
+            "headers": {"authorization": tok["v"], "x-version": "3.0", "accept": acc}})
         arts.extend((r or {}).get("articles") or [])
+        c = page.evaluate(_FETCH_JS, {
+            "url": f"{base}/Channel/ArticlesCount/Today?channelName=All-Stock.{sid}",
+            "headers": {"authorization": tok["v"], "accept": acc}})
+        if isinstance(c, dict) and c.get("count") is not None:
+            posts = c["count"]
 
     seen, bull, bear = set(), 0, 0
     for a in arts:
@@ -71,7 +77,7 @@ def _one(page, sid):
                     bull += 1
                 elif b == -1:
                     bear += 1
-    return {"posts": count["n"], "bull": bull, "bear": bear}
+    return {"posts": posts, "bull": bull, "bear": bear}
 
 
 def fetch_sentiment(stock_ids):
