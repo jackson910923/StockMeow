@@ -60,6 +60,11 @@
         "up_reach": false,
         "down": 44.88,
         "down_reach": false
+      },
+      "sentiment": {
+        "posts": 15,
+        "bull": 9,
+        "bear": 0
       }
     },
     "6116": {
