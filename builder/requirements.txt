@@ -1,2 +1,3 @@
 FinMind
 pandas
+playwright

@@ -144,6 +144,17 @@ def main():
         else:
             log(f"[warn] {sid} 無資料，跳過")
 
+    # 情緒（最佳努力）：只爬 watchlist=你的持股、不爬熱門；只存彙總統計；失敗不影響其他資料。
+    try:
+        from sentiment import fetch_sentiment
+        watch = [c for c in load_watchlist() if c in stocks]
+        for sid, sent in fetch_sentiment(watch).items():
+            if sid in stocks and sent.get("posts") is not None:
+                stocks[sid]["sentiment"] = sent
+                log(f"情緒 {sid}: {sent}")
+    except Exception as e:
+        log(f"[warn] 情緒分析整段略過（不影響其他資料）：{e!r}")
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     if names:
         (OUT_DIR / "names.json").write_text(json.dumps(names, ensure_ascii=False), encoding="utf-8")

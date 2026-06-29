@@ -26,6 +26,9 @@ jobs:
       - name: 安裝套件
         run: pip install -r builder/requirements.txt
 
+      - name: 安裝瀏覽器（同學會情緒分析用）
+        run: python -m playwright install --with-deps chromium
+
       - name: 產生 data.json / names.json
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}

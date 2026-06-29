@@ -7,8 +7,8 @@ const FALLBACK_DATA = {
   updated: "2026-06-26", is_sample: true,
   hot: ["2330","2317"],
   stocks: {
-    "3481": { name:"群創",   price:64.40,  big_player:"sell", day_change_pct:-2.1, month_change_pct:28, buzz:"high",  spark:[48,50,52,49,53,56,55,58,60,59,62,64.4] },
-    "6116": { name:"彩晶",   price:18.80,  big_player:"buy",  day_change_pct:1.3,  month_change_pct:-5, buzz:"quiet", spark:[20,19.5,19,18.6,18.8,18.2,18.5,18.9,18.3,18.6,18.7,18.8] },
+    "3481": { name:"群創",   price:64.40,  big_player:"sell", day_change_pct:-2.1, month_change_pct:28, buzz:"high",  spark:[48,50,52,49,53,56,55,58,60,59,62,64.4], sentiment:{posts:125,bull:7,bear:3} },
+    "6116": { name:"彩晶",   price:18.80,  big_player:"buy",  day_change_pct:1.3,  month_change_pct:-5, buzz:"quiet", spark:[20,19.5,19,18.6,18.8,18.2,18.5,18.9,18.3,18.6,18.7,18.8], sentiment:{posts:19,bull:15,bear:1} },
     "2330": { name:"台積電", price:1085.0, big_player:"buy",  day_change_pct:0.8,  month_change_pct:6,  buzz:"high",  spark:[1020,1035,1010,1050,1060,1045,1070,1065,1080,1075,1082,1085] },
     "2317": { name:"鴻海",   price:203.5,  big_player:"flat", day_change_pct:-0.5, month_change_pct:-2, buzz:"quiet", spark:[208,206,209,205,207,204,206,203,205,202,204,203.5] }
   }
@@ -76,6 +76,15 @@ function buzzText(v){
   if(v==="quiet") return "😴 最近網路上很安靜";
   return null;
 }
+function sentimentText(s){
+  // 股市同學會：熱度=今日發文數；方向=彙總發文者自標的看多/看空
+  if(!s || s.posts==null) return null;
+  const hot = s.posts>=40 ? "🔥" : (s.posts>=8 ? "💬" : "😴");
+  let t = `${hot} 同學會今天 ${s.posts} 篇討論`;
+  const b = s.bull||0, r = s.bear||0;
+  if(b + r >= 3) t += (b>r ? "，偏多" : r>b ? "，偏空" : "，多空拉鋸");
+  return t;
+}
 function todayBadge(day){
   if(day==null) return "";
   const cls = gainClass(day);
@@ -130,7 +139,7 @@ function compute(h){
   if(s.big_player==="sell")  alerts.push("大戶最近在賣，可留意");
   return { id:h.stock_id, name, shares, cost, price:s.price, mv, profit, pct,
            big_player:s.big_player, month:s.month_change_pct, buzz:s.buzz,
-           spark:s.spark, day:s.day_change_pct, alerts };
+           spark:s.spark, day:s.day_change_pct, alerts, sentiment:s.sentiment };
 }
 
 // ── 畫面 ─────────────────────────────────────────────
@@ -174,7 +183,7 @@ function card(r){
     </section>`;
   }
   const cls = gainClass(r.profit), word = r.profit>=0?"賺":"賠", sign = r.profit>=0?"+":"−";
-  const chips = [bigPlayerText(r.big_player), monthText(r.month), buzzText(r.buzz)]
+  const chips = [bigPlayerText(r.big_player), monthText(r.month), sentimentText(r.sentiment)]
                 .filter(Boolean).map(t=>`<div class="chip">${t}</div>`).join("");
   const sparkSvg = sparkline(r.spark);
   const trendDir = (Array.isArray(r.spark)&&r.spark.length>1) ? r.spark[r.spark.length-1]-r.spark[0] : 0;

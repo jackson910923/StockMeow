@@ -61,7 +61,8 @@ manifest.json / sw.js / icon*.png   PWA：加到主畫面、離線
 - `big_player`: `"buy"` / `"sell"` / `"flat"`（近期法人合計淨額趨勢換算）
 - `day_change_pct` / `month_change_pct`: 今日 / 近一個月收盤漲跌 %
 - `spark`: 近 30 個交易日收盤（畫走勢線用）
-- `buzz`: `"high"` / `"quiet"` / `null`（情緒來源；還沒接 PTT/CMoney 前一律給 `null`，前端會自動不顯示）
+- `sentiment`: `{ "posts": 125, "bull": 7, "bear": 3 }` 或不存在。CMoney 股市同學會的彙總統計：今日發文數(熱度) + 彙總發文者自標的看多/看空(方向)。**只對 watchlist（你的持股）抓**，只存彙總數字、不存原文。由 `builder/sentiment.py` 用無頭瀏覽器當訪客讀（最佳努力，失敗不影響其他資料）。
+- `buzz`: 舊欄位，目前一律 `null`（已由 `sentiment` 取代）
 - `hot`: 今日熱門個股代號清單
 
 **注意**：`data.json` 只放市場資料，**永遠不要**把 FinMind token 或個人持股寫進去。
