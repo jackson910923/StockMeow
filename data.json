@@ -52,9 +52,9 @@
         65.0
       ],
       "sentiment": {
-        "posts": 125,
-        "bull": 0,
-        "bear": 0
+        "posts": 67,
+        "bull": 6,
+        "bear": 1
       }
     },
     "6116": {
@@ -97,9 +97,9 @@
         18.25
       ],
       "sentiment": {
-        "posts": 19,
-        "bull": 38,
-        "bear": 2
+        "posts": 6,
+        "bull": 13,
+        "bear": 1
       }
     },
     "2303": {
