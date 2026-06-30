@@ -70,7 +70,7 @@
       },
       "sentiment": {
         "posts": 20,
-        "bull": 6,
+        "bull": 5,
         "bear": 0
       }
     },
@@ -192,7 +192,7 @@
       },
       "sentiment": {
         "posts": 11,
-        "bull": 11,
+        "bull": 7,
         "bear": 1
       }
     },
@@ -253,8 +253,8 @@
       },
       "sentiment": {
         "posts": 13,
-        "bull": 11,
-        "bear": 0
+        "bull": 12,
+        "bear": 1
       }
     },
     "6770": {
@@ -375,7 +375,7 @@
       },
       "sentiment": {
         "posts": 9,
-        "bull": 10,
+        "bull": 8,
         "bear": 0
       }
     },
@@ -497,7 +497,7 @@
       },
       "sentiment": {
         "posts": 0,
-        "bull": 9,
+        "bull": 10,
         "bear": 0
       }
     },
@@ -558,8 +558,8 @@
       },
       "sentiment": {
         "posts": 6,
-        "bull": 9,
-        "bear": 2
+        "bull": 6,
+        "bear": 1
       }
     }
   }
