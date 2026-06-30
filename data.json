@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-29",
+  "updated": "2026-06-30",
   "is_sample": false,
   "hot": [
     "2409",
@@ -15,13 +15,12 @@
   "stocks": {
     "3481": {
       "name": "群創",
-      "price": 67.0,
+      "price": 68.7,
       "big_player": "sell",
-      "day_change_pct": 3.08,
-      "month_change_pct": 31.4,
+      "day_change_pct": 2.54,
+      "month_change_pct": 22.5,
       "buzz": null,
       "spark": [
-        38.7,
         37.45,
         36.95,
         40.6,
@@ -50,7 +49,8 @@
         69.4,
         70.9,
         65.0,
-        67.0
+        67.0,
+        68.7
       ],
       "notice": {
         "on_notice": false,
@@ -71,13 +71,12 @@
     },
     "6116": {
       "name": "彩晶",
-      "price": 19.25,
-      "big_player": "sell",
-      "day_change_pct": 5.48,
-      "month_change_pct": 12.6,
+      "price": 19.6,
+      "big_player": "flat",
+      "day_change_pct": 1.82,
+      "month_change_pct": 4.3,
       "buzz": null,
       "spark": [
-        10.35,
         10.15,
         9.85,
         10.8,
@@ -106,34 +105,34 @@
         19.4,
         19.5,
         18.25,
-        19.25
+        19.25,
+        19.6
       ],
       "notice": {
         "on_notice": false,
         "consec": 0,
         "in10": 1,
         "to_disp": 3,
-        "up": 26.33,
+        "up": 25.08,
         "up_reach": false,
-        "down": 13.57,
+        "down": 12.92,
         "down_reach": false,
         "approx": false
       },
       "sentiment": {
-        "posts": 8,
-        "bull": 11,
-        "bear": 2
+        "posts": 3,
+        "bull": 12,
+        "bear": 1
       }
     },
     "2303": {
       "name": "聯電",
-      "price": 164.0,
+      "price": 164.5,
       "big_player": "sell",
-      "day_change_pct": 0.0,
-      "month_change_pct": 13.5,
+      "day_change_pct": 0.3,
+      "month_change_pct": 12.7,
       "buzz": null,
       "spark": [
-        111.0,
         113.0,
         108.0,
         116.0,
@@ -162,34 +161,34 @@
         178.0,
         178.5,
         164.0,
-        164.0
+        164.0,
+        164.5
       ],
       "notice": {
         "on_notice": false,
         "consec": 0,
         "in10": 0,
         "to_disp": 3,
-        "up": 211.2,
+        "up": 224.4,
         "up_reach": false,
-        "down": 120.0,
+        "down": 127.5,
         "down_reach": false,
         "approx": true
       },
       "sentiment": {
-        "posts": 44,
+        "posts": 62,
         "bull": 11,
         "bear": 0
       }
     },
     "2409": {
       "name": "友達",
-      "price": 30.6,
-      "big_player": "flat",
-      "day_change_pct": 9.48,
-      "month_change_pct": 33.0,
+      "price": 32.7,
+      "big_player": "buy",
+      "day_change_pct": 6.86,
+      "month_change_pct": 37.4,
       "buzz": null,
       "spark": [
-        19.25,
         19.15,
         18.75,
         20.2,
@@ -218,16 +217,17 @@
         30.5,
         30.4,
         27.95,
-        30.6
+        30.6,
+        32.7
       ],
       "notice": {
         "on_notice": false,
         "consec": 0,
         "in10": 1,
         "to_disp": 3,
-        "up": 40.85,
+        "up": 38.35,
         "up_reach": false,
-        "down": 21.05,
+        "down": 19.75,
         "down_reach": false,
         "approx": false
       },
@@ -239,13 +239,12 @@
     },
     "6770": {
       "name": "力積電",
-      "price": 78.9,
-      "big_player": "sell",
-      "day_change_pct": 0.77,
-      "month_change_pct": -11.0,
+      "price": 79.7,
+      "big_player": "flat",
+      "day_change_pct": 1.01,
+      "month_change_pct": -8.4,
       "buzz": null,
       "spark": [
-        62.0,
         58.5,
         57.8,
         59.1,
@@ -274,34 +273,34 @@
         85.7,
         83.2,
         78.3,
-        78.9
+        78.9,
+        79.7
       ],
       "notice": {
         "on_notice": false,
         "consec": 0,
         "in10": 0,
         "to_disp": 3,
-        "up": 107.71,
+        "up": 103.75,
         "up_reach": false,
-        "down": 55.49,
+        "down": 53.45,
         "down_reach": false,
         "approx": true
       },
       "sentiment": {
-        "posts": 35,
+        "posts": 23,
         "bull": 10,
         "bear": 0
       }
     },
     "2344": {
       "name": "華邦電",
-      "price": 203.0,
-      "big_player": "flat",
-      "day_change_pct": -1.69,
-      "month_change_pct": 28.5,
+      "price": 207.5,
+      "big_player": "sell",
+      "day_change_pct": 2.22,
+      "month_change_pct": 23.5,
       "buzz": null,
       "spark": [
-        130.5,
         117.5,
         115.5,
         114.0,
@@ -330,16 +329,17 @@
         205.0,
         219.5,
         206.5,
-        203.0
+        203.0,
+        207.5
       ],
       "notice": {
         "on_notice": false,
         "consec": 0,
         "in10": 3,
         "to_disp": 3,
-        "up": 277.5,
+        "up": 264.38,
         "up_reach": false,
-        "down": 161.5,
+        "down": 155.0,
         "down_reach": false,
         "approx": false
       },
@@ -351,13 +351,12 @@
     },
     "2883": {
       "name": "凱基金",
-      "price": 29.65,
-      "big_player": "buy",
-      "day_change_pct": -0.84,
-      "month_change_pct": 31.8,
+      "price": 28.7,
+      "big_player": "flat",
+      "day_change_pct": -3.2,
+      "month_change_pct": 26.7,
       "buzz": null,
       "spark": [
-        21.35,
         21.65,
         21.6,
         21.4,
@@ -386,34 +385,34 @@
         29.8,
         30.5,
         29.9,
-        29.65
+        29.65,
+        28.7
       ],
       "notice": {
         "on_notice": false,
         "consec": 0,
         "in10": 0,
         "to_disp": 3,
-        "up": 40.06,
+        "up": 39.73,
         "up_reach": false,
-        "down": 20.64,
+        "down": 20.47,
         "down_reach": false,
         "approx": true
       },
       "sentiment": {
-        "posts": 6,
+        "posts": 2,
         "bull": 8,
         "bear": 0
       }
     },
     "2887": {
       "name": "台新新光金",
-      "price": 33.0,
+      "price": 33.25,
       "big_player": "buy",
-      "day_change_pct": 3.45,
-      "month_change_pct": 41.3,
+      "day_change_pct": 0.76,
+      "month_change_pct": 35.2,
       "buzz": null,
       "spark": [
-        23.45,
         23.6,
         23.9,
         23.85,
@@ -442,34 +441,34 @@
         31.6,
         31.85,
         31.9,
-        33.0
+        33.0,
+        33.25
       ],
       "notice": {
         "on_notice": false,
         "consec": 0,
         "in10": 0,
         "to_disp": 3,
-        "up": 42.31,
+        "up": 42.44,
         "up_reach": false,
-        "down": 21.79,
+        "down": 21.86,
         "down_reach": false,
         "approx": true
       },
       "sentiment": {
-        "posts": 6,
+        "posts": 2,
         "bull": 10,
         "bear": 0
       }
     },
     "2337": {
       "name": "旺宏",
-      "price": 158.5,
-      "big_player": "flat",
-      "day_change_pct": -2.46,
-      "month_change_pct": -4.8,
+      "price": 155.5,
+      "big_player": "sell",
+      "day_change_pct": -1.89,
+      "month_change_pct": -7.2,
       "buzz": null,
       "spark": [
-        160.0,
         144.0,
         141.0,
         141.0,
@@ -498,21 +497,22 @@
         172.0,
         161.5,
         162.5,
-        158.5
+        158.5,
+        155.5
       ],
       "notice": {
         "on_notice": false,
         "consec": 0,
         "in10": 1,
         "to_disp": 3,
-        "up": 231.88,
+        "up": 222.0,
         "up_reach": false,
-        "down": 126.14,
+        "down": 122.0,
         "down_reach": false,
         "approx": false
       },
       "sentiment": {
-        "posts": 53,
+        "posts": 25,
         "bull": 10,
         "bear": 0
       }
