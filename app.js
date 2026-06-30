@@ -7,7 +7,7 @@ const FALLBACK_DATA = {
   updated: "2026-06-26", is_sample: true,
   hot: ["2330","2317"],
   stocks: {
-    "3481": { name:"群創",   price:64.40,  big_player:"sell", day_change_pct:-2.1, month_change_pct:28, buzz:"high",  spark:[48,50,52,49,53,56,55,58,60,59,62,64.4], sentiment:{posts:125,bull:24,bear:7}, volume:522735, notice:{on_notice:false,consec:0,in10:5,to_disp:1,soonest:null,stock_cum:4.1,market_cum:-1.9,diff:6.0,up:85.0,up_reach:false,down:43.8,down_reach:false,approx:false} },
+    "3481": { name:"群創",   price:64.40,  big_player:"sell", day_change_pct:-2.1, month_change_pct:28, buzz:"high",  spark:[48,50,52,49,53,56,55,58,60,59,62,64.4], sentiment:{posts:125,bull:24,bear:7}, volume:522735, foreign_net:14821, trust_net:244, notice:{on_notice:false,consec:0,in10:5,to_disp:1,soonest:null,stock_cum:4.1,market_cum:-1.9,diff:6.0,up:85.0,up_reach:false,down:43.8,down_reach:false,approx:false} },
     "6116": { name:"彩晶",   price:18.80,  big_player:"buy",  day_change_pct:1.3,  month_change_pct:-5, buzz:"quiet", spark:[20,19.5,19,18.6,18.8,18.2,18.5,18.9,18.3,18.6,18.7,18.8], sentiment:{posts:19,bull:38,bear:2}, notice:{on_notice:false,consec:0,in10:1,to_disp:3,up:24.8,up_reach:false,down:12.8,down_reach:false} },
     "2330": { name:"台積電", price:1085.0, big_player:"buy",  day_change_pct:0.8,  month_change_pct:6,  buzz:"high",  spark:[1020,1035,1010,1050,1060,1045,1070,1065,1080,1075,1082,1085] },
     "2317": { name:"鴻海",   price:203.5,  big_player:"flat", day_change_pct:-0.5, month_change_pct:-2, buzz:"quiet", spark:[208,206,209,205,207,204,206,203,205,202,204,203.5] }
@@ -111,6 +111,23 @@ function signalSummary(r){            // 綜合參考：大戶(外資/法人) + 
 }
 function pctTo(from, to){ const p=(to/from-1)*100; return (p>=0?"+":"")+p.toFixed(1)+"%"; }
 function fmtVol(v){ if(v==null) return null; return v>=10000 ? (v/10000).toFixed(1)+" 萬張" : v.toLocaleString("zh-TW")+" 張"; }
+function fmtNet(v){            // 法人買賣超（張）：正=買超、負=賣超
+  if(v==null) return "—";
+  if(v===0) return "持平";
+  const a=Math.abs(v), s = a>=10000 ? (a/10000).toFixed(1)+" 萬張" : a.toLocaleString("zh-TW")+" 張";
+  return (v>0?"買超 ":"賣超 ")+s;
+}
+function miniForeign(v){       // 熱門卡精簡：外資買/賣
+  if(v==null||v===0) return null;
+  const a=Math.abs(v), s = a>=10000 ? (a/10000).toFixed(1)+"萬" : a.toLocaleString("zh-TW");
+  return (v>0?"外資買 ":"外資賣 ")+s+"張";
+}
+function instnetRow(r){       // 持股卡：今日外資/投信買賣超
+  if(r.foreign_net==null && r.trust_net==null) return "";
+  return `<div class="instnet"><span class="inst-lbl">今日法人</span>
+    <span>外資 <b class="${gainClass(r.foreign_net||0)}">${fmtNet(r.foreign_net)}</b></span>
+    <span>投信 <b class="${gainClass(r.trust_net||0)}">${fmtNet(r.trust_net)}</b></span></div>`;
+}
 function noticeHead(n){
   if(n.soonest===0)     return "🚨 已達處置累積標準（連3次或10日6次）";
   if(n.soonest!=null)   return `🚨 最快 ${n.soonest} 個交易日後可能處置`;
@@ -209,7 +226,8 @@ function compute(h){
   if(s.big_player==="sell")  alerts.push("大戶最近在賣，可留意");
   return { id:h.stock_id, name, shares, cost, price:s.price, mv, profit, pct,
            big_player:s.big_player, month:s.month_change_pct, buzz:s.buzz,
-           spark:s.spark, day:s.day_change_pct, alerts, sentiment:s.sentiment, notice:s.notice, volume:s.volume };
+           spark:s.spark, day:s.day_change_pct, alerts, sentiment:s.sentiment, notice:s.notice, volume:s.volume,
+           foreign_net:s.foreign_net, trust_net:s.trust_net };
 }
 
 // ── 畫面 ─────────────────────────────────────────────
@@ -284,6 +302,7 @@ function card(r){
       <div class="cell"><div class="label">當初一股買</div><div class="value">${num(r.cost)} 元</div></div>
       ${r.volume!=null?`<div class="cell"><div class="label">今日成交量</div><div class="value">${fmtVol(r.volume)}</div></div>`:""}
     </div>
+    ${instnetRow(r)}
     <div class="status">${chips}</div>
   </section>`;
 }
@@ -319,7 +338,7 @@ function hotCard(code){
   const held = holdings.some(h=>h.stock_id===code);
   const spark = sparkline(s.spark);
   const dir = (Array.isArray(s.spark)&&s.spark.length>1) ? s.spark[s.spark.length-1]-s.spark[0] : 0;
-  const chips = [bigPlayerText(s.big_player), miniMonth(s.month_change_pct), miniSentiment(s.sentiment), miniNotice(s.notice)]
+  const chips = [bigPlayerText(s.big_player), miniForeign(s.foreign_net), miniMonth(s.month_change_pct), miniSentiment(s.sentiment), miniNotice(s.notice)]
                 .filter(Boolean).map(t=>`<span class="mini-chip">${t}</span>`).join("");
   const action = held
     ? `<span class="held-tag">✓ 已持有</span>`

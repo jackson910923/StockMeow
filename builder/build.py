@@ -72,12 +72,18 @@ def fetch_recent(dl, sid, start, end):
     inst = dl.taiwan_stock_institutional_investors(stock_id=sid, start_date=start, end_date=end)
     if inst is not None and len(inst):
         inst = inst.copy()
-        inst["net"] = (inst["buy"] - inst["sell"]) / 1000.0
-        tot = inst.groupby("date")["net"].sum().rename("inst_total_net").reset_index()
-        df = df.merge(tot, on="date", how="left")
-    if "inst_total_net" not in df.columns:
-        df["inst_total_net"] = 0.0
-    df["inst_total_net"] = df["inst_total_net"].fillna(0.0)
+        inst["net"] = (inst["buy"] - inst["sell"]) / 1000.0          # 股→張
+        df = df.merge(inst.groupby("date")["net"].sum().rename("inst_total_net").reset_index(),
+                      on="date", how="left")
+        fmask = inst["name"].isin(["Foreign_Investor", "Foreign_Dealer_Self"])   # 外資(含自營)
+        df = df.merge(inst[fmask].groupby("date")["net"].sum().rename("foreign_net").reset_index(),
+                      on="date", how="left")
+        df = df.merge(inst[inst["name"] == "Investment_Trust"].groupby("date")["net"].sum()
+                      .rename("trust_net").reset_index(), on="date", how="left")     # 投信
+    for col in ("inst_total_net", "foreign_net", "trust_net"):
+        if col not in df.columns:
+            df[col] = 0.0
+        df[col] = df[col].fillna(0.0)
     return df.sort_values("date")
 
 
@@ -95,10 +101,12 @@ def make_record(name, df):
             vol = int(round(float(df["Trading_Volume"].iloc[-1]) / 1000))   # 股→張
         except Exception:
             vol = None
+    fnet = int(round(float(df["foreign_net"].iloc[-1]))) if "foreign_net" in df.columns else None
+    tnet = int(round(float(df["trust_net"].iloc[-1]))) if "trust_net" in df.columns else None
     rec = {"name": name, "price": price,
            "big_player": classify_big_player(df["inst_total_net"]),
            "day_change_pct": day, "month_change_pct": month_change_pct(df["close"]),
-           "volume": vol,
+           "volume": vol, "foreign_net": fnet, "trust_net": tnet,
            "buzz": None, "spark": [round(float(v), 2) for v in closes.tail(SPARK_DAYS)]}
     return str(df["date"].iloc[-1]), rec
 

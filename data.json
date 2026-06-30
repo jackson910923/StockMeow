@@ -20,6 +20,8 @@
       "day_change_pct": 2.54,
       "month_change_pct": 22.5,
       "volume": 522735,
+      "foreign_net": 14821,
+      "trust_net": 244,
       "buzz": null,
       "spark": [
         37.45,
@@ -69,7 +71,7 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 20,
+        "posts": 21,
         "bull": 5,
         "bear": 0
       }
@@ -81,6 +83,8 @@
       "day_change_pct": 1.82,
       "month_change_pct": 4.3,
       "volume": 158852,
+      "foreign_net": -3560,
+      "trust_net": 0,
       "buzz": null,
       "spark": [
         10.15,
@@ -142,6 +146,8 @@
       "day_change_pct": 0.3,
       "month_change_pct": 12.7,
       "volume": 299976,
+      "foreign_net": 35206,
+      "trust_net": -74093,
       "buzz": null,
       "spark": [
         113.0,
@@ -191,7 +197,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 11,
+        "posts": 13,
         "bull": 7,
         "bear": 1
       }
@@ -203,6 +209,8 @@
       "day_change_pct": 6.86,
       "month_change_pct": 37.4,
       "volume": 897870,
+      "foreign_net": 85499,
+      "trust_net": -379,
       "buzz": null,
       "spark": [
         19.15,
@@ -264,6 +272,8 @@
       "day_change_pct": 1.01,
       "month_change_pct": -8.4,
       "volume": 197058,
+      "foreign_net": -19910,
+      "trust_net": 0,
       "buzz": null,
       "spark": [
         58.5,
@@ -313,7 +323,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 8,
+        "posts": 5,
         "bull": 6,
         "bear": 0
       }
@@ -325,6 +335,8 @@
       "day_change_pct": 2.22,
       "month_change_pct": 23.5,
       "volume": 217328,
+      "foreign_net": -21920,
+      "trust_net": -5152,
       "buzz": null,
       "spark": [
         117.5,
@@ -374,7 +386,7 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 9,
+        "posts": 17,
         "bull": 8,
         "bear": 0
       }
@@ -386,6 +398,8 @@
       "day_change_pct": -3.2,
       "month_change_pct": 26.7,
       "volume": 142422,
+      "foreign_net": 21210,
+      "trust_net": -692,
       "buzz": null,
       "spark": [
         21.65,
@@ -435,7 +449,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 1,
+        "posts": 0,
         "bull": 8,
         "bear": 0
       }
@@ -447,6 +461,8 @@
       "day_change_pct": 0.76,
       "month_change_pct": 35.2,
       "volume": 78340,
+      "foreign_net": -3794,
+      "trust_net": 21749,
       "buzz": null,
       "spark": [
         23.6,
@@ -496,7 +512,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 0,
+        "posts": 1,
         "bull": 10,
         "bear": 0
       }
@@ -508,6 +524,8 @@
       "day_change_pct": -1.89,
       "month_change_pct": -7.2,
       "volume": 99767,
+      "foreign_net": -40486,
+      "trust_net": 150,
       "buzz": null,
       "spark": [
         144.0,
@@ -557,7 +575,7 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 6,
+        "posts": 9,
         "bull": 6,
         "bear": 1
       }
