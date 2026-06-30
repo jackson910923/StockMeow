@@ -153,7 +153,18 @@ def main():
                     from notice import compute_notice
                     rows = [(dt, cl, tx_map[dt]) for dt, cl in
                             zip(df["date"].astype(str), df["close"]) if dt in tx_map]
-                    nt = compute_notice(rows)
+                    # 本益比為負/0(虧損)或≥60 → 法規豁免同類 → 我們只比大盤＝精準；否則標保守估算
+                    exempt = False
+                    try:
+                        pp = dl.taiwan_stock_per_pbr(stock_id=sid,
+                                                     start_date=(date.today() - timedelta(days=20)).isoformat(),
+                                                     end_date=end)
+                        if len(pp):
+                            per = float(pp["PER"].iloc[-1])
+                            exempt = (per <= 0 or per >= 60)
+                    except Exception:
+                        pass
+                    nt = compute_notice(rows, exempt=exempt)
                     if nt:
                         rec["notice"] = nt
                 except Exception as e:

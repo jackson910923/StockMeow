@@ -34,8 +34,10 @@ def _is_notice(stock_cum, tx_cum, close_now, close_first):
     return False
 
 
-def compute_notice(rows, offset=OFFSET):
-    """rows: [(date, stock_close, taiex_close), ...] 依日期升冪。回傳狀態 dict 或 None。"""
+def compute_notice(rows, offset=OFFSET, exempt=True):
+    """rows: [(date, stock_close, taiex_close), ...] 依日期升冪。回傳狀態 dict 或 None。
+    exempt=True（本益比為負或≥60）→ 法規豁免同類，只比全體(大盤)＝精準。
+    exempt=False（正常本益比）→ 法規還要比同類，我們沒同類資料 → 標 approx=True（偏保守）。"""
     if not rows or len(rows) < offset + 2:
         return None
     closes = [r[1] for r in rows]
@@ -73,4 +75,5 @@ def compute_notice(rows, offset=OFFSET):
         "to_disp": to_disp,
         "up": round(up, 2), "up_reach": up <= today * 1.10,
         "down": round(dn, 2), "down_reach": dn >= today * 0.90,
+        "approx": (not exempt),
     }
