@@ -1,7 +1,17 @@
 {
   "updated": "2026-06-30",
   "is_sample": false,
-  "hot": [],
+  "hot": [
+    "2409",
+    "3481",
+    "2303",
+    "6770",
+    "6116",
+    "2344",
+    "2883",
+    "2887",
+    "2337"
+  ],
   "stocks": {
     "3481": {
       "name": "群創",
@@ -60,7 +70,7 @@
         "up_reach": false,
         "down": 44.88,
         "down_reach": false,
-        "approx": false
+        "approx": true
       },
       "sentiment": {
         "posts": 12,
@@ -580,7 +590,7 @@
         "up_reach": false,
         "down": 122.0,
         "down_reach": false,
-        "approx": false
+        "approx": true
       },
       "sentiment": {
         "posts": 13,
