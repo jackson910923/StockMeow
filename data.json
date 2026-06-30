@@ -64,9 +64,9 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 63,
-        "bull": 5,
-        "bear": 1
+        "posts": 68,
+        "bull": 6,
+        "bear": 2
       }
     },
     "6116": {
@@ -171,13 +171,13 @@
         "to_disp": 3,
         "up": 211.2,
         "up_reach": false,
-        "down": 118.89,
+        "down": 120.0,
         "down_reach": false,
         "approx": true
       },
       "sentiment": {
         "posts": 44,
-        "bull": 13,
+        "bull": 11,
         "bear": 0
       }
     },
@@ -232,8 +232,8 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 38,
-        "bull": 6,
+        "posts": 22,
+        "bull": 8,
         "bear": 0
       }
     },
@@ -289,7 +289,7 @@
       },
       "sentiment": {
         "posts": 35,
-        "bull": 9,
+        "bull": 10,
         "bear": 0
       }
     },
@@ -344,7 +344,7 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 70,
+        "posts": 31,
         "bull": 9,
         "bear": 0
       }
@@ -457,7 +457,7 @@
       },
       "sentiment": {
         "posts": 6,
-        "bull": 9,
+        "bull": 10,
         "bear": 0
       }
     },

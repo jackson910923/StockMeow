@@ -34,20 +34,20 @@ def _is_notice(stock_cum, tx_cum, close_now, close_first):
     return False
 
 
-def compute_notice(rows, offset=OFFSET, exempt=True):
-    """rows: [(date, stock_close, taiex_close), ...] 依日期升冪。回傳狀態 dict 或 None。
-    exempt=True（本益比為負或≥60）→ 法規豁免同類，只比全體(大盤)＝精準。
-    exempt=False（正常本益比）→ 法規還要比同類，我們沒同類資料 → 標 approx=True（偏保守）。"""
+def compute_notice(rows, market_map, market_tomorrow, offset=OFFSET, exempt=True):
+    """rows: [(date, stock_close), ...] 升冪。market_map: {date: 全體六日漲跌%}（真．等權平均
+    或 TAIEX 後備）。market_tomorrow: 明天全體六日%（假設全市場持平）。
+    exempt=True（本益比為負或≥60）→ 法規豁免同類，只比全體＝精準；False → 標 approx（偏保守）。"""
     if not rows or len(rows) < offset + 2:
         return None
+    dates_r = [r[0] for r in rows]
     closes = [r[1] for r in rows]
-    txs = [r[2] for r in rows]
     flags = []
     for i in range(len(rows)):
         sc = _cum(closes, i, offset)
-        tc = _cum(txs, i, offset)
+        mc = market_map.get(dates_r[i]) if market_map else None
         first = closes[i - (offset - 1)] if i - (offset - 1) >= 0 else None
-        flags.append(_is_notice(sc, tc, closes[i], first))
+        flags.append(_is_notice(sc, mc, closes[i], first))
 
     consec = 0
     for f in reversed(flags):
@@ -58,15 +58,14 @@ def compute_notice(rows, offset=OFFSET, exempt=True):
     in10 = sum(1 for f in flags[-WIN10:] if f)
     to_disp = min(max(0, CONSEC_DISP - consec), max(0, CNT10 - in10))
 
-    # 明天門檻價（假設大盤持平）
-    base_s, base_t = closes[-offset], txs[-offset]
+    base_s = closes[-offset]
     first_close, today = closes[-5], closes[-1]
-    tx_cum = (txs[-1] / base_t - 1) * 100 if base_t else 0.0
-    up1 = base_s * (1 + max(T_STRONG, tx_cum + DIFF) / 100)
-    up2 = max(base_s * (1 + max(T_WEAK, tx_cum + DIFF) / 100), first_close + GAP)
+    mkt = market_tomorrow if market_tomorrow is not None else 0.0
+    up1 = base_s * (1 + max(T_STRONG, mkt + DIFF) / 100)
+    up2 = max(base_s * (1 + max(T_WEAK, mkt + DIFF) / 100), first_close + GAP)
     up = min(up1, up2)
-    dn1 = base_s * (1 + min(-T_STRONG, tx_cum - DIFF) / 100)
-    dn2 = min(base_s * (1 + min(-T_WEAK, tx_cum - DIFF) / 100), first_close - GAP)
+    dn1 = base_s * (1 + min(-T_STRONG, mkt - DIFF) / 100)
+    dn2 = min(base_s * (1 + min(-T_WEAK, mkt - DIFF) / 100), first_close - GAP)
     dn = max(dn1, dn2)
     return {
         "on_notice": bool(flags[-1]),

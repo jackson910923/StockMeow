@@ -134,13 +134,38 @@ def main():
     start = (date.today() - timedelta(days=RECENT_DAYS)).isoformat()
     log(f"近期抓取 {start} ~ {end}，共 {len(ids)} 檔")
 
-    # 大盤(加權指數)抓一次，給注意/處置風險用
+    # 全體有價證券平均六日漲跌% — 注意標準要用。先試「真．全市場等權平均」(MI_INDEX 免費)，
+    # 失敗用加權指數(TAIEX)後備。
     tx_map = {}
     try:
         tx = dl.taiwan_stock_total_return_index(index_id="TAIEX", start_date=start, end_date=end)
         tx_map = dict(zip(tx["date"].astype(str), tx["price"]))
     except Exception as e:
-        log(f"[warn] 大盤指數抓取失敗，注意/處置略過：{e!r}")
+        log(f"[warn] 大盤指數抓取失敗：{e!r}")
+    market_map, market_tom, market_src = None, None, "taiex"
+    try:
+        from market import ensure_market, market_cum_map, market_tomorrow_pct
+        cache = ensure_market()
+        market_map = market_cum_map(cache, offset=6)
+        market_tom = market_tomorrow_pct(cache, offset=6)
+        if market_map:
+            market_src = "twse_all(真.全體等權)"
+    except Exception as e:
+        log(f"[warn] 全體平均(MI_INDEX)失敗，改用大盤近似：{e!r}")
+    # 覆蓋不足（快取沒填滿）→ 近10日會少算，寧可用 TAIEX(全覆蓋)。等快取填滿才用真.全體。
+    if market_map and tx_map:
+        recent = sorted(tx_map)[-14:]
+        covered = sum(1 for d in recent if d in market_map)
+        if covered < 12:
+            log(f"真.全體僅覆蓋近 {covered}/14 日 → 暫用 TAIEX 後備（待快取填滿）")
+            market_map, market_tom, market_src = None, None, f"taiex(真.全體{covered}/14)"
+    if not market_map and tx_map:                       # TAIEX 後備
+        td = sorted(tx_map)
+        market_map = {td[i]: (tx_map[td[i]] / tx_map[td[i - 6]] - 1) * 100
+                      for i in range(6, len(td)) if tx_map[td[i - 6]]}
+        if len(td) > 6 and tx_map[td[-6]]:
+            market_tom = (tx_map[td[-1]] / tx_map[td[-6]] - 1) * 100
+    log(f"全體平均來源：{market_src}（{len(market_map or {})} 日）")
 
     stocks, dates = {}, []
     for sid in ids:
@@ -148,12 +173,11 @@ def main():
         d, rec = make_record(names.get(sid, sid), df)
         if rec:
             # 注意/處置風險（最佳努力）
-            if tx_map and df is not None:
+            if market_map and df is not None:
                 try:
                     from notice import compute_notice
-                    rows = [(dt, cl, tx_map[dt]) for dt, cl in
-                            zip(df["date"].astype(str), df["close"]) if dt in tx_map]
-                    # 本益比為負/0(虧損)或≥60 → 法規豁免同類 → 我們只比大盤＝精準；否則標保守估算
+                    rows = [(dt, cl) for dt, cl in zip(df["date"].astype(str), df["close"])]
+                    # 本益比為負/0(虧損)或≥60 → 法規豁免同類 → 精準；否則標保守估算
                     exempt = False
                     try:
                         pp = dl.taiwan_stock_per_pbr(stock_id=sid,
@@ -164,7 +188,7 @@ def main():
                             exempt = (per <= 0 or per >= 60)
                     except Exception:
                         pass
-                    nt = compute_notice(rows, exempt=exempt)
+                    nt = compute_notice(rows, market_map, market_tom, exempt=exempt)
                     if nt:
                         rec["notice"] = nt
                 except Exception as e:
