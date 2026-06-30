@@ -19,6 +19,7 @@
       "big_player": "sell",
       "day_change_pct": 2.54,
       "month_change_pct": 22.5,
+      "volume": 522735,
       "buzz": null,
       "spark": [
         37.45,
@@ -57,6 +58,10 @@
         "consec": 0,
         "in10": 5,
         "to_disp": 1,
+        "soonest": null,
+        "stock_cum": 4.1,
+        "market_cum": -1.9,
+        "diff": 6.0,
         "up": 87.12,
         "up_reach": false,
         "down": 44.88,
@@ -64,9 +69,9 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 68,
+        "posts": 20,
         "bull": 6,
-        "bear": 2
+        "bear": 0
       }
     },
     "6116": {
@@ -75,6 +80,7 @@
       "big_player": "flat",
       "day_change_pct": 1.82,
       "month_change_pct": 4.3,
+      "volume": 158852,
       "buzz": null,
       "spark": [
         10.15,
@@ -113,6 +119,10 @@
         "consec": 0,
         "in10": 1,
         "to_disp": 3,
+        "soonest": null,
+        "stock_cum": -1.8,
+        "market_cum": -1.9,
+        "diff": 0.2,
         "up": 25.08,
         "up_reach": false,
         "down": 12.92,
@@ -120,8 +130,8 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 3,
-        "bull": 12,
+        "posts": 1,
+        "bull": 10,
         "bear": 1
       }
     },
@@ -131,6 +141,7 @@
       "big_player": "sell",
       "day_change_pct": 0.3,
       "month_change_pct": 12.7,
+      "volume": 299976,
       "buzz": null,
       "spark": [
         113.0,
@@ -169,6 +180,10 @@
         "consec": 0,
         "in10": 0,
         "to_disp": 3,
+        "soonest": null,
+        "stock_cum": 2.8,
+        "market_cum": -1.9,
+        "diff": 4.7,
         "up": 224.4,
         "up_reach": false,
         "down": 127.5,
@@ -176,9 +191,9 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 62,
+        "posts": 11,
         "bull": 11,
-        "bear": 0
+        "bear": 1
       }
     },
     "2409": {
@@ -187,6 +202,7 @@
       "big_player": "buy",
       "day_change_pct": 6.86,
       "month_change_pct": 37.4,
+      "volume": 897870,
       "buzz": null,
       "spark": [
         19.15,
@@ -225,6 +241,10 @@
         "consec": 0,
         "in10": 1,
         "to_disp": 3,
+        "soonest": null,
+        "stock_cum": 5.7,
+        "market_cum": -1.9,
+        "diff": 7.6,
         "up": 38.35,
         "up_reach": false,
         "down": 19.75,
@@ -232,17 +252,18 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 22,
-        "bull": 8,
+        "posts": 13,
+        "bull": 11,
         "bear": 0
       }
     },
     "6770": {
       "name": "力積電",
       "price": 79.7,
-      "big_player": "flat",
+      "big_player": "sell",
       "day_change_pct": 1.01,
       "month_change_pct": -8.4,
+      "volume": 197058,
       "buzz": null,
       "spark": [
         58.5,
@@ -281,6 +302,10 @@
         "consec": 0,
         "in10": 0,
         "to_disp": 3,
+        "soonest": null,
+        "stock_cum": -2.3,
+        "market_cum": -1.9,
+        "diff": -0.4,
         "up": 103.75,
         "up_reach": false,
         "down": 53.45,
@@ -288,8 +313,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 23,
-        "bull": 10,
+        "posts": 8,
+        "bull": 6,
         "bear": 0
       }
     },
@@ -299,6 +324,7 @@
       "big_player": "sell",
       "day_change_pct": 2.22,
       "month_change_pct": 23.5,
+      "volume": 217328,
       "buzz": null,
       "spark": [
         117.5,
@@ -337,6 +363,10 @@
         "consec": 0,
         "in10": 3,
         "to_disp": 3,
+        "soonest": null,
+        "stock_cum": -6.5,
+        "market_cum": -1.9,
+        "diff": -4.6,
         "up": 264.38,
         "up_reach": false,
         "down": 155.0,
@@ -344,17 +374,18 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 31,
-        "bull": 9,
+        "posts": 9,
+        "bull": 10,
         "bear": 0
       }
     },
     "2883": {
       "name": "凱基金",
       "price": 28.7,
-      "big_player": "flat",
+      "big_player": "buy",
       "day_change_pct": -3.2,
       "month_change_pct": 26.7,
+      "volume": 142422,
       "buzz": null,
       "spark": [
         21.65,
@@ -393,6 +424,10 @@
         "consec": 0,
         "in10": 0,
         "to_disp": 3,
+        "soonest": null,
+        "stock_cum": -5.4,
+        "market_cum": -1.9,
+        "diff": -3.5,
         "up": 39.73,
         "up_reach": false,
         "down": 20.47,
@@ -400,7 +435,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 2,
+        "posts": 1,
         "bull": 8,
         "bear": 0
       }
@@ -411,6 +446,7 @@
       "big_player": "buy",
       "day_change_pct": 0.76,
       "month_change_pct": 35.2,
+      "volume": 78340,
       "buzz": null,
       "spark": [
         23.6,
@@ -449,6 +485,10 @@
         "consec": 0,
         "in10": 0,
         "to_disp": 3,
+        "soonest": null,
+        "stock_cum": 3.7,
+        "market_cum": -1.9,
+        "diff": 5.7,
         "up": 42.44,
         "up_reach": false,
         "down": 21.86,
@@ -456,8 +496,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 2,
-        "bull": 10,
+        "posts": 0,
+        "bull": 9,
         "bear": 0
       }
     },
@@ -467,6 +507,7 @@
       "big_player": "sell",
       "day_change_pct": -1.89,
       "month_change_pct": -7.2,
+      "volume": 99767,
       "buzz": null,
       "spark": [
         144.0,
@@ -505,6 +546,10 @@
         "consec": 0,
         "in10": 1,
         "to_disp": 3,
+        "soonest": null,
+        "stock_cum": -16.2,
+        "market_cum": -1.9,
+        "diff": -14.3,
         "up": 222.0,
         "up_reach": false,
         "down": 122.0,
@@ -512,9 +557,9 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 25,
-        "bull": 10,
-        "bear": 0
+        "posts": 6,
+        "bull": 9,
+        "bear": 2
       }
     }
   }

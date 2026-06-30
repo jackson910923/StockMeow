@@ -7,7 +7,7 @@ const FALLBACK_DATA = {
   updated: "2026-06-26", is_sample: true,
   hot: ["2330","2317"],
   stocks: {
-    "3481": { name:"群創",   price:64.40,  big_player:"sell", day_change_pct:-2.1, month_change_pct:28, buzz:"high",  spark:[48,50,52,49,53,56,55,58,60,59,62,64.4], sentiment:{posts:125,bull:24,bear:7}, notice:{on_notice:false,consec:0,in10:5,to_disp:1,up:85.0,up_reach:false,down:43.8,down_reach:false,approx:false} },
+    "3481": { name:"群創",   price:64.40,  big_player:"sell", day_change_pct:-2.1, month_change_pct:28, buzz:"high",  spark:[48,50,52,49,53,56,55,58,60,59,62,64.4], sentiment:{posts:125,bull:24,bear:7}, volume:522735, notice:{on_notice:false,consec:0,in10:5,to_disp:1,soonest:null,stock_cum:4.1,market_cum:-1.9,diff:6.0,up:85.0,up_reach:false,down:43.8,down_reach:false,approx:false} },
     "6116": { name:"彩晶",   price:18.80,  big_player:"buy",  day_change_pct:1.3,  month_change_pct:-5, buzz:"quiet", spark:[20,19.5,19,18.6,18.8,18.2,18.5,18.9,18.3,18.6,18.7,18.8], sentiment:{posts:19,bull:38,bear:2}, notice:{on_notice:false,consec:0,in10:1,to_disp:3,up:24.8,up_reach:false,down:12.8,down_reach:false} },
     "2330": { name:"台積電", price:1085.0, big_player:"buy",  day_change_pct:0.8,  month_change_pct:6,  buzz:"high",  spark:[1020,1035,1010,1050,1060,1045,1070,1065,1080,1075,1082,1085] },
     "2317": { name:"鴻海",   price:203.5,  big_player:"flat", day_change_pct:-0.5, month_change_pct:-2, buzz:"quiet", spark:[208,206,209,205,207,204,206,203,205,202,204,203.5] }
@@ -110,25 +110,40 @@ function signalSummary(r){            // 綜合參考：大戶(外資/法人) + 
   return `⚖️ 大戶在${bp>0?"買":"賣"}、討論偏${st>0?"多":"空"}，方向分歧，再觀察`;
 }
 function pctTo(from, to){ const p=(to/from-1)*100; return (p>=0?"+":"")+p.toFixed(1)+"%"; }
-function noticeBox(n, price){       // 注意/處置風險（持股卡用，完整）
+function fmtVol(v){ if(v==null) return null; return v>=10000 ? (v/10000).toFixed(1)+" 萬張" : v.toLocaleString("zh-TW")+" 張"; }
+function noticeHead(n){
+  if(n.soonest===0)     return "🚨 已達處置累積標準（連3次或10日6次）";
+  if(n.soonest!=null)   return `🚨 最快 ${n.soonest} 個交易日後可能處置`;
+  if(n.in10>0)          return `近10日 ${n.in10} 次注意${n.consec>1?`·連續${n.consec}天`:""}，再 ${n.to_disp} 次到處置`;
+  return "處置風險低";
+}
+function noticeBox(n, price){       // 注意/處置風險（持股卡用，完整，仿處置股 App）
   if(!n) return "";
-  const danger = n.to_disp===0 || n.on_notice;
-  const warn = !danger && (n.to_disp<=1 || n.up_reach || n.down_reach);
+  const danger = n.soonest===0 || n.on_notice;
+  const warn = !danger && (n.soonest!=null || n.to_disp<=1);
   const cls = danger ? "nrisk-hi" : warn ? "nrisk-mid" : "nrisk-lo";
-  let s1;
-  if(n.to_disp===0)      s1 = "🚨 已達處置累積標準（連3次或10日6次）";
-  else if(n.in10>0)      s1 = `近10日 ${n.in10} 次注意${n.consec>1?`（連續${n.consec}天）`:""}，再 ${n.to_disp} 次到處置`;
-  else                   s1 = "目前無注意累積";
-  // 門檻只講「明天漲跌停(±10%)內碰得到的」；都碰不到就直接說明天不會
-  let s2;
-  const up = `漲過 ${num(n.up)}（${pctTo(price, n.up)}）`;
-  const dn = `跌破 ${num(n.down)}（${pctTo(price, n.down)}）`;
-  if(n.up_reach && n.down_reach) s2 = `明天 ${up} 或 ${dn} 就會被列注意`;
-  else if(n.up_reach)            s2 = `明天 ${up} 就會被列注意`;
-  else if(n.down_reach)          s2 = `明天 ${dn} 就會被列注意`;
-  else                          s2 = `明天就算漲停或跌停（±10%），都碰不到注意門檻 → 明天不會被列注意`;
+  const filled = Math.max(0, Math.min(100, Math.round((n.in10/6)*100)));   // 量表：近10日次數/6
+  const gauge = `<div class="ngauge"><div class="ngfill" style="width:${filled}%"></div></div>`;
+  // 處置條件：只講漲跌停(±10%)內碰得到的價；碰不到就直說明天不會
+  let thr;
+  if(n.up_reach || n.down_reach){
+    const p=[];
+    if(n.up_reach) p.push(`漲過 ${num(n.up)}（${pctTo(price, n.up)}）`);
+    if(n.down_reach) p.push(`跌破 ${num(n.down)}（${pctTo(price, n.down)}）`);
+    thr = `<b>處置條件</b>：本日收盤 ${p.join(" 或 ")} → 隔日可能再被列注意`;
+  } else {
+    thr = `<b>處置條件</b>：明天漲停跌停都碰不到門檻 → 明天不會被列注意`;
+  }
+  // 豁免條件：差幅（個股 vs 全體平均）<20% 就不會被列注意
+  let ex = "";
+  if(n.diff!=null){
+    const w = n.diff>=0 ? `強 ${n.diff}%` : `弱 ${Math.abs(n.diff)}%`;
+    ex = `<div class="nrow nsub"><b>豁免條件</b>：漲跌幅比全體平均${w}（差幅 <20% 就不會被列注意）</div>`;
+  }
   const approx = n.approx ? `<div class="nrow nsub">＊非虧損股，未納入同類條件，估算偏保守</div>` : "";
-  return `<div class="notice ${cls}"><div class="nrow">📋 ${s1}</div><div class="nrow nsub">${s2}</div>${approx}</div>`;
+  return `<div class="notice ${cls}">
+    <div class="nrow nhead">📋 ${noticeHead(n)}</div>${gauge}
+    <div class="nrow nsub">${thr}</div>${ex}${approx}</div>`;
 }
 function miniNotice(n){             // 熱門卡用，精簡：只在接近處置時出現
   if(!n) return null;
@@ -190,7 +205,7 @@ function compute(h){
   if(s.big_player==="sell")  alerts.push("大戶最近在賣，可留意");
   return { id:h.stock_id, name, shares, cost, price:s.price, mv, profit, pct,
            big_player:s.big_player, month:s.month_change_pct, buzz:s.buzz,
-           spark:s.spark, day:s.day_change_pct, alerts, sentiment:s.sentiment, notice:s.notice };
+           spark:s.spark, day:s.day_change_pct, alerts, sentiment:s.sentiment, notice:s.notice, volume:s.volume };
 }
 
 // ── 畫面 ─────────────────────────────────────────────
@@ -263,6 +278,7 @@ function card(r){
       <div class="cell"><div class="label">最近收盤</div><div class="value">${num(r.price)} 元</div></div>
       <div class="cell"><div class="label">總共值多少</div><div class="value">${money(r.mv)}</div></div>
       <div class="cell"><div class="label">當初一股買</div><div class="value">${num(r.cost)} 元</div></div>
+      ${r.volume!=null?`<div class="cell"><div class="label">今日成交量</div><div class="value">${fmtVol(r.volume)}</div></div>`:""}
     </div>
     <div class="status">${chips}</div>
   </section>`;

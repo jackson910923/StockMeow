@@ -67,12 +67,31 @@ def compute_notice(rows, market_map, market_tomorrow, offset=OFFSET, exempt=True
     dn1 = base_s * (1 + min(-T_STRONG, mkt - DIFF) / 100)
     dn2 = min(base_s * (1 + min(-T_WEAK, mkt - DIFF) / 100), first_close - GAP)
     dn = max(dn1, dn2)
+    up_reach, dn_reach = up <= today * 1.10, dn >= today * 0.90
+
+    # 最快幾個交易日後可能處置（樂觀估：之後每個交易日都被列注意）
+    if to_disp == 0:
+        soonest = 0
+    elif up_reach or dn_reach:
+        soonest = to_disp
+    else:
+        soonest = None                          # 明天碰不到門檻 → 短期不會
+
+    # 差幅 = 個股六日% − 全體六日%（≥20 才達注意；豁免條件的依據）
+    s_cum = _cum(closes, len(closes) - 1, offset)
+    m_cum = market_map.get(dates_r[-1]) if market_map else None
+    diff = round(s_cum - m_cum, 1) if (s_cum is not None and m_cum is not None) else None
+
     return {
         "on_notice": bool(flags[-1]),
         "consec": consec,
         "in10": in10,
         "to_disp": to_disp,
-        "up": round(up, 2), "up_reach": up <= today * 1.10,
-        "down": round(dn, 2), "down_reach": dn >= today * 0.90,
+        "soonest": soonest,
+        "stock_cum": round(s_cum, 1) if s_cum is not None else None,
+        "market_cum": round(m_cum, 1) if m_cum is not None else None,
+        "diff": diff,
+        "up": round(up, 2), "up_reach": up_reach,
+        "down": round(dn, 2), "down_reach": dn_reach,
         "approx": (not exempt),
     }

@@ -67,7 +67,8 @@ def fetch_recent(dl, sid, start, end):
     price = dl.taiwan_stock_daily(stock_id=sid, start_date=start, end_date=end)
     if price is None or len(price) == 0 or "close" not in price.columns:
         return None
-    df = price[["date", "close"]].copy()
+    cols = ["date", "close"] + (["Trading_Volume"] if "Trading_Volume" in price.columns else [])
+    df = price[cols].copy()
     inst = dl.taiwan_stock_institutional_investors(stock_id=sid, start_date=start, end_date=end)
     if inst is not None and len(inst):
         inst = inst.copy()
@@ -88,9 +89,16 @@ def make_record(name, df):
     if price <= 0:
         return None, None
     day = round((float(closes.iloc[-1]) / float(closes.iloc[-2]) - 1) * 100, 2) if len(closes) >= 2 else 0.0
+    vol = None
+    if "Trading_Volume" in df.columns:
+        try:
+            vol = int(round(float(df["Trading_Volume"].iloc[-1]) / 1000))   # 股→張
+        except Exception:
+            vol = None
     rec = {"name": name, "price": price,
            "big_player": classify_big_player(df["inst_total_net"]),
            "day_change_pct": day, "month_change_pct": month_change_pct(df["close"]),
+           "volume": vol,
            "buzz": None, "spark": [round(float(v), 2) for v in closes.tail(SPARK_DAYS)]}
     return str(df["date"].iloc[-1]), rec
 
