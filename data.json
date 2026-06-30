@@ -64,9 +64,9 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 57,
+        "posts": 63,
         "bull": 5,
-        "bear": 0
+        "bear": 1
       }
     },
     "6116": {
@@ -121,8 +121,8 @@
       },
       "sentiment": {
         "posts": 8,
-        "bull": 12,
-        "bear": 1
+        "bull": 11,
+        "bear": 2
       }
     },
     "2303": {
@@ -176,8 +176,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 71,
-        "bull": 9,
+        "posts": 44,
+        "bull": 13,
         "bear": 0
       }
     },
@@ -232,8 +232,8 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 54,
-        "bull": 7,
+        "posts": 38,
+        "bull": 6,
         "bear": 0
       }
     },
@@ -288,8 +288,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 33,
-        "bull": 11,
+        "posts": 35,
+        "bull": 9,
         "bear": 0
       }
     },
@@ -344,8 +344,8 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 77,
-        "bull": 7,
+        "posts": 70,
+        "bull": 9,
         "bear": 0
       }
     },
@@ -400,7 +400,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 3,
+        "posts": 6,
         "bull": 8,
         "bear": 0
       }
@@ -456,8 +456,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 12,
-        "bull": 10,
+        "posts": 6,
+        "bull": 9,
         "bear": 0
       }
     },
@@ -512,7 +512,7 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 37,
+        "posts": 53,
         "bull": 10,
         "bear": 0
       }
