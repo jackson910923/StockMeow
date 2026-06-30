@@ -80,7 +80,10 @@ def fetch_recent(dl, sid, start, end):
                       on="date", how="left")
         df = df.merge(inst[inst["name"] == "Investment_Trust"].groupby("date")["net"].sum()
                       .rename("trust_net").reset_index(), on="date", how="left")     # 投信
-    for col in ("inst_total_net", "foreign_net", "trust_net"):
+        dmask = inst["name"].isin(["Dealer_self", "Dealer_Hedging"])                 # 自營商(自行+避險)
+        df = df.merge(inst[dmask].groupby("date")["net"].sum().rename("dealer_net").reset_index(),
+                      on="date", how="left")
+    for col in ("inst_total_net", "foreign_net", "trust_net", "dealer_net"):
         if col not in df.columns:
             df[col] = 0.0
         df[col] = df[col].fillna(0.0)
@@ -101,12 +104,12 @@ def make_record(name, df):
             vol = int(round(float(df["Trading_Volume"].iloc[-1]) / 1000))   # 股→張
         except Exception:
             vol = None
-    fnet = int(round(float(df["foreign_net"].iloc[-1]))) if "foreign_net" in df.columns else None
-    tnet = int(round(float(df["trust_net"].iloc[-1]))) if "trust_net" in df.columns else None
+    g = lambda c: int(round(float(df[c].iloc[-1]))) if c in df.columns else None
     rec = {"name": name, "price": price,
            "big_player": classify_big_player(df["inst_total_net"]),
            "day_change_pct": day, "month_change_pct": month_change_pct(df["close"]),
-           "volume": vol, "foreign_net": fnet, "trust_net": tnet,
+           "volume": vol, "foreign_net": g("foreign_net"), "trust_net": g("trust_net"),
+           "dealer_net": g("dealer_net"), "total_net": g("inst_total_net"),
            "buzz": None, "spark": [round(float(v), 2) for v in closes.tail(SPARK_DAYS)]}
     return str(df["date"].iloc[-1]), rec
 

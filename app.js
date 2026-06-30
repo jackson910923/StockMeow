@@ -7,7 +7,7 @@ const FALLBACK_DATA = {
   updated: "2026-06-26", is_sample: true,
   hot: ["2330","2317"],
   stocks: {
-    "3481": { name:"群創",   price:64.40,  big_player:"sell", day_change_pct:-2.1, month_change_pct:28, buzz:"high",  spark:[48,50,52,49,53,56,55,58,60,59,62,64.4], sentiment:{posts:125,bull:24,bear:7}, volume:522735, foreign_net:14821, trust_net:244, notice:{on_notice:false,consec:0,in10:5,to_disp:1,soonest:null,stock_cum:4.1,market_cum:-1.9,diff:6.0,up:85.0,up_reach:false,down:43.8,down_reach:false,approx:false} },
+    "3481": { name:"群創",   price:64.40,  big_player:"sell", day_change_pct:-2.1, month_change_pct:28, buzz:"high",  spark:[48,50,52,49,53,56,55,58,60,59,62,64.4], sentiment:{posts:125,bull:24,bear:7}, volume:522735, foreign_net:14821, trust_net:244, dealer_net:-120, total_net:14945, notice:{on_notice:false,consec:0,in10:5,to_disp:1,soonest:null,stock_cum:4.1,market_cum:-1.9,diff:6.0,up:85.0,up_reach:false,down:43.8,down_reach:false,approx:false} },
     "6116": { name:"彩晶",   price:18.80,  big_player:"buy",  day_change_pct:1.3,  month_change_pct:-5, buzz:"quiet", spark:[20,19.5,19,18.6,18.8,18.2,18.5,18.9,18.3,18.6,18.7,18.8], sentiment:{posts:19,bull:38,bear:2}, notice:{on_notice:false,consec:0,in10:1,to_disp:3,up:24.8,up_reach:false,down:12.8,down_reach:false} },
     "2330": { name:"台積電", price:1085.0, big_player:"buy",  day_change_pct:0.8,  month_change_pct:6,  buzz:"high",  spark:[1020,1035,1010,1050,1060,1045,1070,1065,1080,1075,1082,1085] },
     "2317": { name:"鴻海",   price:203.5,  big_player:"flat", day_change_pct:-0.5, month_change_pct:-2, buzz:"quiet", spark:[208,206,209,205,207,204,206,203,205,202,204,203.5] }
@@ -122,11 +122,13 @@ function miniForeign(v){       // 熱門卡精簡：外資買/賣
   const a=Math.abs(v), s = a>=10000 ? (a/10000).toFixed(1)+"萬" : a.toLocaleString("zh-TW");
   return (v>0?"外資買 ":"外資賣 ")+s+"張";
 }
-function instnetRow(r){       // 持股卡：今日外資/投信買賣超
-  if(r.foreign_net==null && r.trust_net==null) return "";
+function instnetRow(r){       // 持股卡：今日外資/投信/自營買賣超 + 三大法人合計
+  if(r.foreign_net==null && r.trust_net==null && r.dealer_net==null && r.total_net==null) return "";
+  const item=(lbl,v)=> v==null ? "" : `<span>${lbl} <b class="${gainClass(v||0)}">${fmtNet(v)}</b></span>`;
+  const total = r.total_net==null ? "" :
+    `<span class="inst-total">三大法人合計 <b class="${gainClass(r.total_net||0)}">${fmtNet(r.total_net)}</b></span>`;
   return `<div class="instnet"><span class="inst-lbl">今日法人</span>
-    <span>外資 <b class="${gainClass(r.foreign_net||0)}">${fmtNet(r.foreign_net)}</b></span>
-    <span>投信 <b class="${gainClass(r.trust_net||0)}">${fmtNet(r.trust_net)}</b></span></div>`;
+    ${item("外資",r.foreign_net)}${item("投信",r.trust_net)}${item("自營",r.dealer_net)}${total}</div>`;
 }
 function noticeHead(n){
   if(n.soonest===0)     return "🚨 已達處置累積標準（連3次或10日6次）";
@@ -227,7 +229,7 @@ function compute(h){
   return { id:h.stock_id, name, shares, cost, price:s.price, mv, profit, pct,
            big_player:s.big_player, month:s.month_change_pct, buzz:s.buzz,
            spark:s.spark, day:s.day_change_pct, alerts, sentiment:s.sentiment, notice:s.notice, volume:s.volume,
-           foreign_net:s.foreign_net, trust_net:s.trust_net };
+           foreign_net:s.foreign_net, trust_net:s.trust_net, dealer_net:s.dealer_net, total_net:s.total_net };
 }
 
 // ── 畫面 ─────────────────────────────────────────────
