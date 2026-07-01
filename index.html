@@ -28,8 +28,21 @@
     <section class="summary" id="summary" hidden></section>
     <main id="cards"></main>
     <section id="allocation" hidden></section>
-    <h2 class="sec-title" id="hotTitle" hidden>🔥 今日熱門（成交量前 10）</h2>
-    <main id="hotCards" class="hot-grid"></main>
+    <div class="hot-head">
+      <h2 class="sec-title" id="hotTitle" hidden>🔥 今日熱門（成交量前 10）</h2>
+      <select id="hotSort" class="hot-sort" hidden aria-label="熱門股排序依據">
+        <option value="volume">依成交量</option>
+        <option value="change">依漲跌幅</option>
+        <option value="inst">依法人買超</option>
+        <option value="buzz">依討論熱度</option>
+      </select>
+    </div>
+    <div id="hotCards" class="hot-grid"></div>
+    <aside id="riskPanel" class="risk-panel" hidden>
+      <h2 class="sec-title">📋 注意／處置風險看板</h2>
+      <div class="risk-hint">持股與今日熱門股，依風險程度排序，方便盤後快速掃描。</div>
+      <div id="riskBoard" class="risk-board"></div>
+    </aside>
     <footer class="disclaimer">
       本頁所有數字與「參考」傾向僅供參考，<b>不是投資建議</b>，請自行判斷、風險自負。<br>
       資料來源：FinMind、證交所、CMoney 股市同學會（公開資料）。

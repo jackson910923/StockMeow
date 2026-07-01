@@ -190,3 +190,53 @@ input,select{
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
 .field label{font-weight:700;font-size:15px;}
 .hint{font-size:13px;color:var(--sub);margin-top:2px;}
+
+/* ===== 熱門股標題列（含排序選單）===== */
+.hot-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:28px 4px 2px;}
+.hot-head .sec-title{margin:0;}
+.hot-sort{font-size:13px;padding:6px 8px;border-radius:8px;}
+
+/* ===== 注意/處置風險看板（桌面版） ===== */
+.risk-panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 16px 14px;}
+.risk-panel .sec-title{margin:0 0 6px;}
+.risk-hint{font-size:13px;color:var(--sub);margin-bottom:10px;}
+.risk-board{display:flex;flex-direction:column;gap:8px;max-height:76vh;overflow:auto;}
+.risk-row{border-radius:10px;padding:9px 11px;border-left:4px solid #cbd2dc;background:#f3f5f9;}
+.risk-row.nrisk-hi{background:#fdecec;border-left-color:var(--gain);}
+.risk-row.nrisk-mid{background:#fff6e5;border-left-color:#f0a020;}
+.risk-row.nrisk-lo{background:#f3f5f9;border-left-color:#cbd2dc;}
+.risk-name{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.risk-name .code{font-size:12px;color:var(--sub);font-weight:600;}
+.risk-name .held-dot{color:var(--brand2);font-size:10px;}
+.risk-badge{font-size:12px;font-weight:800;margin-top:2px;}
+.risk-detail{font-size:12.5px;color:var(--sub);margin-top:3px;line-height:1.4;}
+
+/* ===== 桌面版（>=900px）：多欄儀表板佈局 ===== */
+@media (min-width:900px){
+  .wrap{
+    max-width:1360px;
+    display:grid;
+    grid-template-columns:2.1fr 1fr;
+    gap:22px 28px;
+    align-items:start;
+    grid-template-areas:
+      "summary  summary"
+      "alloc    risk"
+      "cards    risk"
+      "hothead  risk"
+      "hot      risk"
+      "foot     foot";
+  }
+  #summary{grid-area:summary;}
+  #allocation{grid-area:alloc;}
+  #cards{grid-area:cards; display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:18px;}
+  #cards .card{margin-top:0;}
+  .hot-head{grid-area:hothead;}
+  #hotCards{grid-area:hot;}
+  .hot-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
+  #riskPanel{grid-area:risk; position:sticky; top:16px;}
+  .disclaimer{grid-area:foot;}
+}
+@media (max-width:899.98px){
+  #riskPanel{display:none;}   /* 風險看板是桌面盤後掃描用，手機版維持原本單欄卡片體驗 */
+}

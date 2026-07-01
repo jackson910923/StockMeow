@@ -269,6 +269,7 @@ function render(){
   renderCards(rows);
   renderAllocation(rows);
   renderHot();
+  renderRiskBoard();
 }
 
 function renderSummary(rows){
@@ -385,13 +386,56 @@ function hotCard(code){
   </section>`;
 }
 
+let hotSortKey = "volume";
+function hotSortValue(code, key){
+  const s = DATA.stocks[code];
+  if(key==="change") return s.day_change_pct ?? -Infinity;
+  if(key==="inst")   return s.total_net ?? ((s.foreign_net||0)+(s.trust_net||0)+(s.dealer_net||0));
+  if(key==="buzz")   return (s.sentiment && s.sentiment.posts) || 0;
+  return 0;
+}
 function renderHot(){
   const title = document.getElementById("hotTitle");
+  const sortSel = document.getElementById("hotSort");
   const wrap = document.getElementById("hotCards");
-  const hot = (DATA.hot||[]).filter(c=>DATA.stocks && DATA.stocks[c]);
-  if(!hot.length){ title.hidden=true; wrap.innerHTML=""; return; }
-  title.hidden = false;
+  let hot = (DATA.hot||[]).filter(c=>DATA.stocks && DATA.stocks[c]);
+  if(!hot.length){ title.hidden=true; sortSel.hidden=true; wrap.innerHTML=""; return; }
+  title.hidden = false; sortSel.hidden = false;
+  if(hotSortKey!=="volume") hot = [...hot].sort((a,b)=>hotSortValue(b,hotSortKey)-hotSortValue(a,hotSortKey));
   wrap.innerHTML = hot.map(hotCard).join("");
+}
+
+// ── 注意／處置風險看板（桌面版：持股+熱門股一次掃描，依風險排序） ──────
+function riskLevel(n){
+  if(!n) return { rank:3, cls:"nrisk-lo", label:"—" };
+  const danger = n.soonest===0 || n.on_notice;
+  const warn = !danger && (n.soonest!=null || n.to_disp<=1);
+  if(danger) return { rank:0, cls:"nrisk-hi",  label:"🚨 高" };
+  if(warn)   return { rank:1, cls:"nrisk-mid", label:"⚠️ 中" };
+  return       { rank:2, cls:"nrisk-lo",  label:"低" };
+}
+function riskRow(code){
+  const s = DATA.stocks[code], n = s.notice;
+  const lv = riskLevel(n);
+  const held = holdings.some(h=>h.stock_id===code);
+  const detail = n ? noticeHead(n) : "尚無注意/處置資料";
+  return `<div class="risk-row ${lv.cls}">
+    <div class="risk-name"><b>${s.name}</b> <span class="code">${code}</span>${held?' <span class="held-dot" title="已持有">●</span>':''}</div>
+    <div class="risk-badge">${lv.label}</div>
+    <div class="risk-detail">${detail}</div>
+  </div>`;
+}
+function renderRiskBoard(){
+  const panel = document.getElementById("riskPanel");
+  if(!panel) return;
+  const codes = Array.from(new Set([...holdings.map(h=>h.stock_id), ...(DATA.hot||[])]))
+                .filter(c=>DATA.stocks && DATA.stocks[c] && DATA.stocks[c].notice);
+  if(!codes.length){ panel.hidden = true; return; }
+  panel.hidden = false;
+  const rows = codes
+    .map(c=>({ code:c, n:DATA.stocks[c].notice, lv:riskLevel(DATA.stocks[c].notice) }))
+    .sort((a,b)=> a.lv.rank-b.lv.rank || (b.n.in10||0)-(a.n.in10||0));
+  document.getElementById("riskBoard").innerHTML = rows.map(r=>riskRow(r.code)).join("");
 }
 
 // ── 設定面板 ─────────────────────────────────────────
@@ -467,6 +511,7 @@ function wireUp(){
     document.getElementById("addShares").value="";
     document.getElementById("addCost").value="";
   };
+  document.getElementById("hotSort").onchange = e=>{ hotSortKey = e.target.value; renderHot(); };
   document.getElementById("colorMode").onchange = e=>{ settings.colorMode=e.target.value; saveSettings(); };
   document.getElementById("unit").onchange = e=>{ settings.unit=e.target.value; saveSettings(); };
   document.getElementById("resetBtn").onclick = ()=>{
