@@ -78,7 +78,9 @@ def fetch_recent(dl, sid, start, end):
     cols = ["date", "close"] + (["Trading_Volume"] if "Trading_Volume" in price.columns else [])
     df = price[cols].copy()
     inst = dl.taiwan_stock_institutional_investors(stock_id=sid, start_date=start, end_date=end)
+    inst_dates = set()
     if inst is not None and len(inst):
+        inst_dates = set(inst["date"])
         inst = inst.copy()
         inst["net"] = (inst["buy"] - inst["sell"]) / 1000.0          # 股→張
         df = df.merge(inst.groupby("date")["net"].sum().rename("inst_total_net").reset_index(),
@@ -91,10 +93,14 @@ def fetch_recent(dl, sid, start, end):
         dmask = inst["name"].isin(["Dealer_self", "Dealer_Hedging"])                 # 自營商(自行+避險)
         df = df.merge(inst[dmask].groupby("date")["net"].sum().rename("dealer_net").reset_index(),
                       on="date", how="left")
+    # 只在「當天法人資料確實有公布」時才把缺項補0（=那天那類別剛好無買賣，真的持平）；
+    # 整天都還沒公布(常見於當天剛收盤、FinMind還沒進資料)保留 NaN，
+    # 不然會誤顯示成「持平」，其實是「還不知道」。
+    have_inst = df["date"].isin(inst_dates)
     for col in ("inst_total_net", "foreign_net", "trust_net", "dealer_net"):
         if col not in df.columns:
-            df[col] = 0.0
-        df[col] = df[col].fillna(0.0)
+            df[col] = float("nan")
+        df.loc[have_inst, col] = df.loc[have_inst, col].fillna(0.0)
     return df.sort_values("date")
 
 
@@ -112,7 +118,7 @@ def make_record(name, df):
             vol = int(round(float(df["Trading_Volume"].iloc[-1]) / 1000))   # 股→張
         except Exception:
             vol = None
-    g = lambda c: int(round(float(df[c].iloc[-1]))) if c in df.columns else None
+    g = lambda c: int(round(float(df[c].iloc[-1]))) if c in df.columns and pd.notna(df[c].iloc[-1]) else None
     rec = {"name": name, "price": price,
            "big_player": classify_big_player(df["inst_total_net"]),
            "day_change_pct": day, "month_change_pct": month_change_pct(df["close"]),

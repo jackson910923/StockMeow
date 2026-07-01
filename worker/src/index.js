@@ -209,12 +209,14 @@ async function buildQuote(code, token) {
   const monthBase = closes.length > MONTH_DAYS ? closes[closes.length - 1 - MONTH_DAYS] : closes[0];
   const monthChange = monthBase ? round((priceNow / monthBase - 1) * 100, 1) : 0;
 
-  const last5 = dates.slice(-5).map(d => (instByDate[d] && instByDate[d].total) || 0);
+  // 只用「有公布法人資料」的日子算方向/取今日買賣超；還沒公布(常見於剛收盤當天)不當作真的0，
+  // 不然會把「還不知道」誤顯示/誤算成「持平」。
+  const last5 = dates.slice(-5).filter(d => instByDate[d]).map(d => instByDate[d].total);
   const gross = last5.reduce((a, b) => a + Math.abs(b), 0);
   const sum = last5.reduce((a, b) => a + b, 0);
   const bigPlayer = gross === 0 ? "flat" : (sum / gross >= DEADZONE ? "buy" : (sum / gross <= -DEADZONE ? "sell" : "flat"));
 
-  const today = instByDate[last] || { foreign: 0, trust: 0, dealer: 0, total: 0 };
+  const today = instByDate[last];
   const vol = byDate[last].volume;
 
   // 注意/處置風險：用 TAIEX 六日累積% 當全體市場近似值（見檔案開頭說明）
@@ -241,10 +243,10 @@ async function buildQuote(code, token) {
     day_change_pct: dayChange,
     month_change_pct: monthChange,
     volume: vol != null ? Math.round(vol / 1000) : null,
-    foreign_net: Math.round(today.foreign),
-    trust_net: Math.round(today.trust),
-    dealer_net: Math.round(today.dealer),
-    total_net: Math.round(today.total),
+    foreign_net: today ? Math.round(today.foreign) : null,
+    trust_net: today ? Math.round(today.trust) : null,
+    dealer_net: today ? Math.round(today.dealer) : null,
+    total_net: today ? Math.round(today.total) : null,
     big_player: bigPlayer,
     spark: closes.slice(-SPARK_DAYS).map(v => round(v, 2)),
     updated: last,
