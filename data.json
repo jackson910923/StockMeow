@@ -20,7 +20,7 @@
       "big_player": "sell",
       "day_change_pct": -1.89,
       "month_change_pct": 19.9,
-      "volume": 583323,
+      "volume": 587748,
       "foreign_net": 0,
       "trust_net": 0,
       "dealer_net": 0,
@@ -76,9 +76,9 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 55,
-        "bull": 7,
-        "bear": 1
+        "posts": 22,
+        "bull": 3,
+        "bear": 2
       }
     },
     "6116": {
@@ -87,7 +87,7 @@
       "big_player": "flat",
       "day_change_pct": -6.38,
       "month_change_pct": -11.1,
-      "volume": 135718,
+      "volume": 136602,
       "foreign_net": 0,
       "trust_net": 0,
       "dealer_net": 0,
@@ -143,8 +143,8 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 4,
-        "bull": 13,
+        "posts": 3,
+        "bull": 11,
         "bear": 0
       }
     },
@@ -154,7 +154,7 @@
       "big_player": "sell",
       "day_change_pct": 2.74,
       "month_change_pct": 19.4,
-      "volume": 242644,
+      "volume": 244700,
       "foreign_net": 0,
       "trust_net": 0,
       "dealer_net": 0,
@@ -210,8 +210,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 28,
-        "bull": 11,
+        "posts": 6,
+        "bull": 9,
         "bear": 0
       }
     },
@@ -221,7 +221,7 @@
       "big_player": "buy",
       "day_change_pct": -6.27,
       "month_change_pct": 17.2,
-      "volume": 725551,
+      "volume": 728575,
       "foreign_net": 0,
       "trust_net": 0,
       "dealer_net": 0,
@@ -277,8 +277,8 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 22,
-        "bull": 11,
+        "posts": 9,
+        "bull": 12,
         "bear": 0
       }
     },
@@ -288,7 +288,7 @@
       "big_player": "sell",
       "day_change_pct": -8.43,
       "month_change_pct": 3.0,
-      "volume": 226051,
+      "volume": 232382,
       "foreign_net": 0,
       "trust_net": 0,
       "dealer_net": 0,
@@ -344,8 +344,8 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 33,
-        "bull": 12,
+        "posts": 26,
+        "bull": 10,
         "bear": 0
       }
     },
@@ -355,7 +355,7 @@
       "big_player": "sell",
       "day_change_pct": -6.78,
       "month_change_pct": -13.5,
-      "volume": 261609,
+      "volume": 264775,
       "foreign_net": 0,
       "trust_net": 0,
       "dealer_net": 0,
@@ -411,9 +411,9 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 23,
-        "bull": 9,
-        "bear": 2
+        "posts": 7,
+        "bull": 10,
+        "bear": 1
       }
     },
     "2883": {
@@ -422,7 +422,7 @@
       "big_player": "buy",
       "day_change_pct": -1.39,
       "month_change_pct": 20.9,
-      "volume": 86718,
+      "volume": 87288,
       "foreign_net": 0,
       "trust_net": 0,
       "dealer_net": 0,
@@ -479,7 +479,7 @@
       },
       "sentiment": {
         "posts": 1,
-        "bull": 6,
+        "bull": 9,
         "bear": 0
       }
     },
@@ -489,7 +489,7 @@
       "big_player": "buy",
       "day_change_pct": -4.95,
       "month_change_pct": 0.1,
-      "volume": 144735,
+      "volume": 146125,
       "foreign_net": 0,
       "trust_net": 0,
       "dealer_net": 0,
@@ -545,8 +545,8 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 14,
-        "bull": 8,
+        "posts": 3,
+        "bull": 7,
         "bear": 0
       }
     },
@@ -556,7 +556,7 @@
       "big_player": "sell",
       "day_change_pct": -6.96,
       "month_change_pct": 0.4,
-      "volume": 98007,
+      "volume": 101276,
       "foreign_net": 0,
       "trust_net": 0,
       "dealer_net": 0,
@@ -612,8 +612,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 30,
-        "bull": 9,
+        "posts": 10,
+        "bull": 8,
         "bear": 0
       }
     },
@@ -623,7 +623,7 @@
       "big_player": "buy",
       "day_change_pct": -3.36,
       "month_change_pct": 6.5,
-      "volume": 78426,
+      "volume": 79439,
       "foreign_net": 0,
       "trust_net": 0,
       "dealer_net": 0,
@@ -679,7 +679,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 4,
+        "posts": 0,
         "bull": 9,
         "bear": 1
       }
