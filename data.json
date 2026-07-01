@@ -76,7 +76,7 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 12,
+        "posts": 7,
         "bull": 7,
         "bear": 1
       }
@@ -156,9 +156,9 @@
       "month_change_pct": 19.4,
       "volume": 244700,
       "foreign_net": 65874,
-      "trust_net": -45793,
+      "trust_net": -44967,
       "dealer_net": 5661,
-      "total_net": 25742,
+      "total_net": 26568,
       "buzz": null,
       "spark": [
         108.0,
@@ -210,7 +210,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 11,
+        "posts": 15,
         "bull": 6,
         "bear": 1
       }
@@ -277,7 +277,7 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 7,
+        "posts": 5,
         "bull": 6,
         "bear": 1
       }
@@ -344,7 +344,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 17,
+        "posts": 15,
         "bull": 8,
         "bear": 0
       }
@@ -411,7 +411,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 16,
+        "posts": 11,
         "bull": 11,
         "bear": 0
       }
@@ -478,7 +478,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 2,
+        "posts": 1,
         "bull": 7,
         "bear": 0
       }
@@ -545,7 +545,7 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 3,
+        "posts": 1,
         "bull": 11,
         "bear": 0
       }
@@ -558,9 +558,9 @@
       "month_change_pct": 0.4,
       "volume": 101276,
       "foreign_net": -1966,
-      "trust_net": -3976,
+      "trust_net": -3896,
       "dealer_net": -21,
-      "total_net": -5964,
+      "total_net": -5884,
       "buzz": null,
       "spark": [
         275.0,
@@ -612,7 +612,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 18,
+        "posts": 21,
         "bull": 7,
         "bear": 0
       }
@@ -679,7 +679,7 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 8,
+        "posts": 3,
         "bull": 3,
         "bear": 0
       }
