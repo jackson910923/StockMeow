@@ -44,6 +44,11 @@ function gainClass(v){
 function accentClass(v){ return "accent-"+(gainClass(v)==="gain"?"gain":"loss"); }
 function arrow(v){ return v>0?"▲":(v<0?"▼":"—"); }
 
+const REPO = "jackson910923/StockMeow";
+function requestListingUrl(code){        // 一鍵加入追蹤清單：開 GitHub「建立新檔案」頁面，檔名/內容已預填代號
+  const path = `builder/requests/${code}.txt`;
+  return `https://github.com/${REPO}/new/main?filename=${encodeURIComponent(path)}&value=${encodeURIComponent(code)}`;
+}
 function resolveName(code){
   return (DATA.stocks && DATA.stocks[code] && DATA.stocks[code].name)
       || (NAMES_ALL && NAMES_ALL[code]) || code;
@@ -294,7 +299,8 @@ function card(r){
   if(r.missing){
     return `<section class="card missing-card">
       <div class="name-row"><div class="nm"><span class="name">${r.name}</span> <span class="code">${r.id}</span></div></div>
-      <div class="missing">「${r.name}」目前還沒有市價資料。<br>請管理者把代號 <b>${r.id}</b> 加進追蹤清單後更新，這張卡就會出現損益與走勢。</div>
+      <div class="missing">「${r.name}」目前還沒有市價資料，加進追蹤清單後（commit 後約幾分鐘~明天）這張卡就會出現損益與走勢。</div>
+      <a class="request-btn" href="${requestListingUrl(r.id)}" target="_blank" rel="noopener">📌 一鍵加入追蹤清單（管理者用，需登入 GitHub）</a>
       <div class="grid">
         <div class="cell"><div class="label">我有幾張</div><div class="value">${r.shares} 張</div></div>
         <div class="cell"><div class="label">當初一股買</div><div class="value">${num(r.cost)} 元</div></div>
