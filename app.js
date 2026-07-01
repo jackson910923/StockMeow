@@ -47,7 +47,7 @@ function arrow(v){ return v>0?"▲":(v<0?"▼":"—"); }
 const REPO = "jackson910923/StockMeow";
 // 僅限「開 issue」權限、只綁定這個 repo 的 fine-grained token（見 builder/requests/README.md）。
 // 這串本來就會公開在前端程式碼裡（GitHub Pages 沒有後端能藏密鑰），所以權限刻意縮到最小。
-const ISSUE_TOKEN = "";
+const ISSUE_TOKEN = "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";
 function requestListingUrl(code){        // 備援：開 GitHub「建立新檔案」頁面，檔名/內容已預填代號
   const path = `builder/requests/${code}.txt`;
   return `https://github.com/${REPO}/new/main?filename=${encodeURIComponent(path)}&value=${encodeURIComponent(code)}`;
