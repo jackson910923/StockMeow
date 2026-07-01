@@ -10,6 +10,7 @@
 T_STRONG, T_WEAK, DIFF, GAP, MIN_PRICE = 32.0, 25.0, 20.0, 50.0, 5.0
 OFFSET = 6                 # 六日累積基準=窗口前一日(D-6)；TWSE「六日前收盤」慣例
 CONSEC_DISP, WIN10, CNT10 = 3, 10, 6   # 連續3次 或 10日內6次 → 處置
+LIMIT_PCT, MAX_SIM_DAYS = 10.0, 15     # 台股漲跌停±10%；模擬上限15個交易日(約3週)
 
 
 def _cum(seq, i, offset):
@@ -32,6 +33,38 @@ def _is_notice(stock_cum, tx_cum, close_now, close_first):
     if stock_cum < -T_WEAK and diff <= -DIFF and gap >= GAP:
         return True
     return False
+
+
+def _simulate_worst_case(closes, flags, market_flat, offset):
+    """『明天碰不到』時，估算：如果之後每天都連續同向漲停或跌停，最快幾個交易日後可能進處置。
+    回傳 (days, direction) 或 None；direction 為 'up'/'down'。這是理論最快下限，不是機率預測，
+    假設大盤六日累積%維持不變（同「明天」門檻的假設延伸）。"""
+    best = None
+    for direction, sign in (("up", 1), ("down", -1)):
+        sim = list(closes)
+        window = list(flags[-WIN10:])
+        consec = 0
+        for f in reversed(window):
+            if f:
+                consec += 1
+            else:
+                break
+        for day in range(1, MAX_SIM_DAYS + 1):
+            sim.append(sim[-1] * (1 + sign * LIMIT_PCT / 100))
+            i = len(sim) - 1
+            sc = _cum(sim, i, offset)
+            first = sim[i - (offset - 1)] if i - (offset - 1) >= 0 else None
+            flag = _is_notice(sc, market_flat, sim[i], first)
+            window.append(flag)
+            if len(window) > WIN10:
+                window.pop(0)
+            consec = consec + 1 if flag else 0
+            in10 = sum(1 for f in window if f)
+            if consec >= CONSEC_DISP or in10 >= CNT10:
+                if best is None or day < best[0]:
+                    best = (day, direction)
+                break
+    return best
 
 
 def compute_notice(rows, market_map, market_tomorrow, offset=OFFSET, exempt=True):
@@ -77,6 +110,13 @@ def compute_notice(rows, market_map, market_tomorrow, offset=OFFSET, exempt=True
     else:
         soonest = None                          # 明天碰不到門檻 → 短期不會
 
+    # 明天碰不到時，估算「之後每天都連續同向漲跌停」最快幾天後可能進處置（理論下限，非預測）
+    soonest_worst, worst_dir = None, None
+    if soonest is None:
+        sim = _simulate_worst_case(closes, flags, mkt, offset)
+        if sim:
+            soonest_worst, worst_dir = sim
+
     # 差幅 = 個股六日% − 全體六日%（≥20 才達注意；豁免條件的依據）
     s_cum = _cum(closes, len(closes) - 1, offset)
     m_cum = market_map.get(dates_r[-1]) if market_map else None
@@ -88,6 +128,8 @@ def compute_notice(rows, market_map, market_tomorrow, offset=OFFSET, exempt=True
         "in10": in10,
         "to_disp": to_disp,
         "soonest": soonest,
+        "soonest_worst": soonest_worst,
+        "worst_dir": worst_dir,
         "stock_cum": round(s_cum, 1) if s_cum is not None else None,
         "market_cum": round(m_cum, 1) if m_cum is not None else None,
         "diff": diff,
