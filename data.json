@@ -21,10 +21,10 @@
       "day_change_pct": -1.89,
       "month_change_pct": 19.9,
       "volume": 587748,
-      "foreign_net": 0,
-      "trust_net": 0,
-      "dealer_net": 0,
-      "total_net": 0,
+      "foreign_net": -12186,
+      "trust_net": -1718,
+      "dealer_net": -2383,
+      "total_net": -16287,
       "buzz": null,
       "spark": [
         36.95,
@@ -76,22 +76,22 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 22,
-        "bull": 3,
-        "bear": 2
+        "posts": 12,
+        "bull": 7,
+        "bear": 1
       }
     },
     "6116": {
       "name": "彩晶",
       "price": 18.35,
-      "big_player": "flat",
+      "big_player": "sell",
       "day_change_pct": -6.38,
       "month_change_pct": -11.1,
       "volume": 136602,
-      "foreign_net": 0,
-      "trust_net": 0,
-      "dealer_net": 0,
-      "total_net": 0,
+      "foreign_net": -20530,
+      "trust_net": 81,
+      "dealer_net": -3143,
+      "total_net": -23592,
       "buzz": null,
       "spark": [
         9.85,
@@ -143,8 +143,8 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 3,
-        "bull": 11,
+        "posts": 0,
+        "bull": 7,
         "bear": 0
       }
     },
@@ -155,10 +155,10 @@
       "day_change_pct": 2.74,
       "month_change_pct": 19.4,
       "volume": 244700,
-      "foreign_net": 0,
-      "trust_net": 0,
-      "dealer_net": 0,
-      "total_net": 0,
+      "foreign_net": 65874,
+      "trust_net": -45793,
+      "dealer_net": 5661,
+      "total_net": 25742,
       "buzz": null,
       "spark": [
         108.0,
@@ -210,22 +210,22 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 6,
-        "bull": 9,
-        "bear": 0
+        "posts": 11,
+        "bull": 6,
+        "bear": 1
       }
     },
     "2409": {
       "name": "友達",
       "price": 30.65,
-      "big_player": "buy",
+      "big_player": "flat",
       "day_change_pct": -6.27,
       "month_change_pct": 17.2,
       "volume": 728575,
-      "foreign_net": 0,
-      "trust_net": 0,
-      "dealer_net": 0,
-      "total_net": 0,
+      "foreign_net": -163161,
+      "trust_net": -299,
+      "dealer_net": -8241,
+      "total_net": -171700,
       "buzz": null,
       "spark": [
         18.75,
@@ -277,9 +277,9 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 9,
-        "bull": 12,
-        "bear": 0
+        "posts": 7,
+        "bull": 6,
+        "bear": 1
       }
     },
     "2344": {
@@ -288,11 +288,11 @@
       "big_player": "sell",
       "day_change_pct": -8.43,
       "month_change_pct": 3.0,
-      "volume": 232382,
-      "foreign_net": 0,
-      "trust_net": 0,
-      "dealer_net": 0,
-      "total_net": 0,
+      "volume": 234325,
+      "foreign_net": -22678,
+      "trust_net": -6644,
+      "dealer_net": -3924,
+      "total_net": -33246,
       "buzz": null,
       "spark": [
         115.5,
@@ -341,11 +341,11 @@
         "up_reach": false,
         "down": 153.75,
         "down_reach": false,
-        "approx": false
+        "approx": true
       },
       "sentiment": {
-        "posts": 26,
-        "bull": 10,
+        "posts": 17,
+        "bull": 8,
         "bear": 0
       }
     },
@@ -356,10 +356,10 @@
       "day_change_pct": -6.78,
       "month_change_pct": -13.5,
       "volume": 264775,
-      "foreign_net": 0,
-      "trust_net": 0,
-      "dealer_net": 0,
-      "total_net": 0,
+      "foreign_net": -16750,
+      "trust_net": 6,
+      "dealer_net": -1476,
+      "total_net": -18220,
       "buzz": null,
       "spark": [
         57.8,
@@ -411,9 +411,9 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 7,
-        "bull": 10,
-        "bear": 1
+        "posts": 16,
+        "bull": 11,
+        "bear": 0
       }
     },
     "2883": {
@@ -422,11 +422,11 @@
       "big_player": "buy",
       "day_change_pct": -1.39,
       "month_change_pct": 20.9,
-      "volume": 87288,
-      "foreign_net": 0,
-      "trust_net": 0,
-      "dealer_net": 0,
-      "total_net": 0,
+      "volume": 88969,
+      "foreign_net": 13573,
+      "trust_net": -7675,
+      "dealer_net": -4835,
+      "total_net": 1063,
       "buzz": null,
       "spark": [
         21.6,
@@ -478,8 +478,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 1,
-        "bull": 9,
+        "posts": 2,
+        "bull": 7,
         "bear": 0
       }
     },
@@ -490,10 +490,10 @@
       "day_change_pct": -4.95,
       "month_change_pct": 0.1,
       "volume": 146125,
-      "foreign_net": 0,
-      "trust_net": 0,
-      "dealer_net": 0,
-      "total_net": 0,
+      "foreign_net": -7683,
+      "trust_net": -122,
+      "dealer_net": -2270,
+      "total_net": -10075,
       "buzz": null,
       "spark": [
         63.9,
@@ -546,7 +546,7 @@
       },
       "sentiment": {
         "posts": 3,
-        "bull": 7,
+        "bull": 11,
         "bear": 0
       }
     },
@@ -557,10 +557,10 @@
       "day_change_pct": -6.96,
       "month_change_pct": 0.4,
       "volume": 101276,
-      "foreign_net": 0,
-      "trust_net": 0,
-      "dealer_net": 0,
-      "total_net": 0,
+      "foreign_net": -1966,
+      "trust_net": -3976,
+      "dealer_net": -21,
+      "total_net": -5964,
       "buzz": null,
       "spark": [
         275.0,
@@ -612,8 +612,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 10,
-        "bull": 8,
+        "posts": 18,
+        "bull": 7,
         "bear": 0
       }
     },
@@ -623,11 +623,11 @@
       "big_player": "buy",
       "day_change_pct": -3.36,
       "month_change_pct": 6.5,
-      "volume": 79439,
-      "foreign_net": 0,
-      "trust_net": 0,
-      "dealer_net": 0,
-      "total_net": 0,
+      "volume": 79878,
+      "foreign_net": 27510,
+      "trust_net": -30750,
+      "dealer_net": -794,
+      "total_net": -4034,
       "buzz": null,
       "spark": [
         77.9,
@@ -679,9 +679,9 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 0,
-        "bull": 9,
-        "bear": 1
+        "posts": 8,
+        "bull": 3,
+        "bear": 0
       }
     }
   }
