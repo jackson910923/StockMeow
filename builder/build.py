@@ -7,6 +7,7 @@
 """
 import os
 import json
+import time
 import urllib.request
 from datetime import date, timedelta
 from pathlib import Path
@@ -47,12 +48,19 @@ def month_change_pct(close):
     return 0.0 if prev == 0 else round((float(s.iloc[-1]) / prev - 1) * 100, 1)
 
 
-def top_volume_stocks(n=HOT_N):
-    try:
-        with urllib.request.urlopen(TWSE_TOP20, timeout=25) as r:
-            data = json.loads(r.read().decode("utf-8"))
-    except Exception as e:
-        log(f"[warn] 證交所熱門股抓取失敗：{e!r}")
+def top_volume_stocks(n=HOT_N, retries=3, backoff=3):
+    data = None
+    for attempt in range(1, retries + 1):
+        try:
+            with urllib.request.urlopen(TWSE_TOP20, timeout=25) as r:
+                data = json.loads(r.read().decode("utf-8"))
+            break
+        except Exception as e:
+            log(f"[warn] 證交所熱門股抓取失敗（第 {attempt}/{retries} 次）：{e!r}")
+            if attempt < retries:
+                time.sleep(backoff * attempt)
+    if data is None:
+        log("[warn] 證交所熱門股重試後仍失敗，今日熱門榜從缺")
         return []
     rows = []
     for x in data:
