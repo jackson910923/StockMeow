@@ -15,3 +15,7 @@ venv/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Cloudflare Worker（本機開發用的暫存）
+worker/.wrangler/
+worker/node_modules/

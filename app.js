@@ -44,6 +44,19 @@ function gainClass(v){
 function accentClass(v){ return "accent-"+(gainClass(v)==="gain"?"gain":"loss"); }
 function arrow(v){ return v>0?"▲":(v<0?"▼":"—"); }
 
+// 即時報價 Worker（冷門股一加就有基本資料，不用等每日 CI）。部署方式見 worker/README.md。
+const WORKER_URL = "";
+const liveQuotes = {};          // code -> Worker 回傳的即時資料（只存這個分頁記憶體，不落地）
+const liveAttempted = new Set();
+function fetchLiveQuote(code){
+  if(!WORKER_URL || liveAttempted.has(code)) return;
+  liveAttempted.add(code);
+  fetch(`${WORKER_URL}/quote?code=${encodeURIComponent(code)}`)
+    .then(r=>r.ok ? r.json() : null)
+    .then(q=>{ if(q && !q.error){ liveQuotes[code]=q; render(); } })
+    .catch(()=>{});
+}
+
 const REPO = "jackson910923/StockMeow";
 // 一鍵加入追蹤清單：開 GitHub「開新 issue」頁面，標題/內容已預填好。不需要任何 token
 // （GitHub 自家的 token 一旦公開在前端程式碼裡會被自動撤銷，測過真的會失效，所以不走這條路）。
@@ -263,10 +276,13 @@ function donut(items){
 
 // ── 計算 ─────────────────────────────────────────────
 function compute(h){
-  const s = DATA.stocks && DATA.stocks[h.stock_id];
+  const s = (DATA.stocks && DATA.stocks[h.stock_id]) || liveQuotes[h.stock_id];
   const shares = Number(h.shares)||0, cost = Number(h.cost_per_share)||0;
   const name = resolveName(h.stock_id);
-  if(!s || s.price==null){ return { id:h.stock_id, name, shares, cost, missing:true }; }
+  if(!s || s.price==null){
+    fetchLiveQuote(h.stock_id);   // 冷門股剛加：試著跟 Worker 即時抓一份基本資料
+    return { id:h.stock_id, name, shares, cost, missing:true };
+  }
   const mv = shares*1000*s.price, costTotal = shares*1000*cost;
   const profit = mv-costTotal, pct = costTotal>0 ? profit/costTotal*100 : 0;
   const alerts = [];
@@ -275,7 +291,8 @@ function compute(h){
   return { id:h.stock_id, name, shares, cost, price:s.price, mv, profit, pct,
            big_player:s.big_player, month:s.month_change_pct, buzz:s.buzz,
            spark:s.spark, day:s.day_change_pct, alerts, sentiment:s.sentiment, notice:s.notice, volume:s.volume,
-           foreign_net:s.foreign_net, trust_net:s.trust_net, dealer_net:s.dealer_net, total_net:s.total_net };
+           foreign_net:s.foreign_net, trust_net:s.trust_net, dealer_net:s.dealer_net, total_net:s.total_net,
+           live:s.live };
 }
 
 // ── 畫面 ─────────────────────────────────────────────
@@ -335,11 +352,14 @@ function card(r){
   const sig = signalSummary(r);
   const signalBlock = sig ? `<div class="signal">${sig}<span class="sig-note">參考</span></div>` : "";
   const noticeBlk = noticeBox(r.notice, r.price);
+  const liveBlock = r.live
+    ? `<div class="live-note">⚡ 即時資料（剛加入，明天每日更新後才會有情緒與處置風險）</div>` : "";
   return `<section class="card ${accentClass(r.profit)}">
     <div class="name-row">
       <div class="nm"><span class="name">${r.name}</span> <span class="code">${r.id}</span></div>
       ${todayBadge(r.day)}
     </div>
+    ${liveBlock}
     <div class="hero">
       <div class="pl ${cls}">${word} ${money(Math.abs(r.profit))}</div>
       <div class="pl-pct ${cls}">(${sign}${Math.abs(Math.round(r.pct))}%)</div>

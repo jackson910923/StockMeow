@@ -65,6 +65,7 @@ body{
 .code{font-size:14px;color:var(--sub);}
 .today{font-size:15px;font-weight:800;white-space:nowrap;padding:4px 10px;border-radius:999px;background:#f3f5f9;}
 .today.gain{color:var(--gain);} .today.loss{color:var(--loss);}
+.live-note{margin-top:6px;font-size:12.5px;color:var(--brand2);font-weight:700;}
 .hero{margin:12px 0 2px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
 .pl{font-size:34px;font-weight:900;line-height:1.1;}
 .pl-pct{font-size:18px;font-weight:800;}
