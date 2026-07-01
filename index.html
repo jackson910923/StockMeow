@@ -33,11 +33,23 @@
       <select id="hotSort" class="hot-sort" hidden aria-label="熱門股排序依據">
         <option value="volume">依成交量</option>
         <option value="change">依漲跌幅</option>
-        <option value="inst">依法人買超</option>
         <option value="buzz">依討論熱度</option>
       </select>
     </div>
     <div id="hotCards" class="hot-grid"></div>
+    <div id="instRankWrap" hidden>
+      <h2 class="sec-title">📊 外資買賣超排行（前10，含ETF）</h2>
+      <div class="inst-rank-grid">
+        <div class="inst-rank-col">
+          <h3 class="inst-rank-head buy">🔺 買超排行</h3>
+          <ol id="instBuyRank" class="inst-rank-list"></ol>
+        </div>
+        <div class="inst-rank-col">
+          <h3 class="inst-rank-head sell">🔻 賣超排行</h3>
+          <ol id="instSellRank" class="inst-rank-list"></ol>
+        </div>
+      </div>
+    </div>
     <aside id="riskPanel" class="risk-panel" hidden>
       <h2 class="sec-title">📋 注意／處置風險看板</h2>
       <div class="risk-hint">持股與今日熱門股，依風險程度排序，方便盤後快速掃描。</div>

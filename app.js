@@ -308,6 +308,7 @@ function render(){
   renderCards(rows);
   renderAllocation(rows);
   renderHot();
+  renderInstRank();
   renderRiskBoard();
 }
 
@@ -436,7 +437,6 @@ let hotSortKey = "volume";
 function hotSortValue(code, key){
   const s = DATA.stocks[code];
   if(key==="change") return s.day_change_pct ?? -Infinity;
-  if(key==="inst")   return s.total_net ?? ((s.foreign_net||0)+(s.trust_net||0)+(s.dealer_net||0));
   if(key==="buzz")   return (s.sentiment && s.sentiment.posts) || 0;
   return 0;
 }
@@ -449,6 +449,24 @@ function renderHot(){
   title.hidden = false; sortSel.hidden = false;
   if(hotSortKey!=="volume") hot = [...hot].sort((a,b)=>hotSortValue(b,hotSortKey)-hotSortValue(a,hotSortKey));
   wrap.innerHTML = hot.map(hotCard).join("");
+}
+
+// 外資買賣超排行（前10，含ETF；TWSE官方T86資料，跟官網「外資及陸資買超/賣超前20名」同一份）
+function instRankList(items){
+  return items.map((it,i)=>`
+    <li class="inst-rank-row">
+      <span class="rank-num">第${i+1}名</span>
+      <span class="rank-name">${it.name} <span class="code">${it.code}</span></span>
+      <span class="rank-net ${gainClass(it.net)}">${num(Math.abs(it.net),0)} 張</span>
+    </li>`).join("");
+}
+function renderInstRank(){
+  const wrap = document.getElementById("instRankWrap");
+  const buy = DATA.inst_buy_rank || [], sell = DATA.inst_sell_rank || [];
+  if(!buy.length && !sell.length){ wrap.hidden = true; return; }
+  wrap.hidden = false;
+  document.getElementById("instBuyRank").innerHTML = instRankList(buy);
+  document.getElementById("instSellRank").innerHTML = instRankList(sell);
 }
 
 // ── 注意／處置風險看板（桌面版：持股+熱門股一次掃描，依風險排序） ──────

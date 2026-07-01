@@ -23,6 +23,8 @@ STOCK_NAMES_OVERRIDE = {}
 
 WINDOW = 5; MONTH_DAYS = 20; DEADZONE = 0.20; SPARK_DAYS = 30; RECENT_DAYS = 75; HOT_N = 10
 TWSE_TOP20 = "https://openapi.twse.com.tw/v1/exchangeReport/MI_INDEX20"
+TWSE_T86 = "https://www.twse.com.tw/rwd/zh/fund/T86"
+INST_RANK_N = 10
 
 
 def log(m):
@@ -69,6 +71,47 @@ def top_volume_stocks(n=HOT_N, retries=3, backoff=3):
             rows.append((c, str(x.get("Name", "")).strip(), int(x.get("TradeVolume", 0) or 0)))
     rows.sort(key=lambda t: t[2], reverse=True)
     return rows[:n]
+
+
+def fetch_inst_rank(n=INST_RANK_N, retries=3, backoff=3):
+    """外資及陸資(不含自營商)買賣超排行——TWSE 官方 T86(免費/公開，含ETF)，
+    跟 TWSE 官網「外資及陸資買超/賣超前20名」同一份資料。往前找最近有資料的一天。"""
+    for days_back in range(5):
+        d = date.today() - timedelta(days=days_back)
+        ymd = d.strftime("%Y%m%d")
+        payload = None
+        for attempt in range(1, retries + 1):
+            try:
+                url = f"{TWSE_T86}?date={ymd}&selectType=ALL&response=json"
+                req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+                with urllib.request.urlopen(req, timeout=25) as r:
+                    j = json.loads(r.read().decode("utf-8"))
+                if j.get("stat") == "OK" and j.get("data"):
+                    payload = j
+                break
+            except Exception as e:
+                log(f"[warn] 外資買賣超排行抓取失敗 {ymd}（第 {attempt}/{retries} 次）：{e!r}")
+                if attempt < retries:
+                    time.sleep(backoff * attempt)
+        if not payload:
+            continue
+        rows = []
+        for r in payload["data"]:
+            code, name = str(r[0]).strip(), str(r[1]).strip()
+            try:
+                net = int(str(r[4]).replace(",", ""))   # 外陸資買賣超股數(不含外資自營商)
+            except Exception:
+                continue
+            rows.append((code, name, int(net / 1000)))    # 股→張（無條件捨去小數，跟TWSE官網顯示一致）
+        if not rows:
+            continue
+        rows.sort(key=lambda t: t[2], reverse=True)
+        buy = [{"code": c, "name": nm, "net": v} for c, nm, v in rows[:n] if v > 0]
+        sell = [{"code": c, "name": nm, "net": v} for c, nm, v in sorted(rows, key=lambda t: t[2])[:n] if v < 0]
+        log(f"外資買賣超排行：{ymd}（買超{len(buy)}檔／賣超{len(sell)}檔）")
+        return buy, sell
+    log("[warn] 外資買賣超排行找不到近期資料，從缺")
+    return [], []
 
 
 def fetch_recent(dl, sid, start, end):
@@ -162,6 +205,8 @@ def main():
         names.setdefault(c, n)
     log("今日熱門：" + ("、".join(f"{n}{c}" for c, n, _ in hot) or "（無）"))
 
+    inst_buy_rank, inst_sell_rank = fetch_inst_rank(INST_RANK_N)
+
     ids = list(dict.fromkeys(load_watchlist() + hot_codes))
     end = date.today().isoformat()
     start = (date.today() - timedelta(days=RECENT_DAYS)).isoformat()
@@ -252,7 +297,8 @@ def main():
         log("[error] 沒有任何股票成功產出，data.json 不寫出")
         raise SystemExit(1)
     out = {"updated": max(dates), "is_sample": False,
-           "hot": [c for c in hot_codes if c in stocks], "stocks": stocks}
+           "hot": [c for c in hot_codes if c in stocks], "stocks": stocks,
+           "inst_buy_rank": inst_buy_rank, "inst_sell_rank": inst_sell_rank}
     (OUT_DIR / "data.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     log(f"完成：{len(stocks)} 檔（含熱門 {len(out['hot'])}）→ {OUT_DIR}\\data.json, names.json")
 
