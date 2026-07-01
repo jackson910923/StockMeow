@@ -17,7 +17,6 @@ from FinMind.data import DataLoader
 ROOT = Path(__file__).resolve().parent.parent              # repo 根
 OUT_DIR = Path(os.getenv("DASHBOARD_OUT", str(ROOT)))      # data.json / names.json 寫這
 WATCHLIST_FILE = Path(__file__).resolve().parent / "watchlist.txt"
-REQUESTS_DIR = Path(__file__).resolve().parent / "requests"
 DEFAULT_STOCKS = ["3481", "6116"]
 STOCK_NAMES_OVERRIDE = {}
 
@@ -116,30 +115,15 @@ def make_record(name, df):
 
 
 def load_watchlist():
-    text = WATCHLIST_FILE.read_text(encoding="utf-8") if WATCHLIST_FILE.exists() else ""
-    codes = [c for c in (ln.split("#")[0].strip() for ln in text.splitlines()) if c]
-
-    # 冷門股「一鍵加入追蹤清單」請求：前端幫使用者產生連結，直接在 GitHub 網頁建立
-    # builder/requests/<代號>.txt（內容=代號），一 commit 就觸發這支 CI。這裡把請求併入
-    # watchlist.txt（永久保留）並清空 requests/，之後不用再手動編輯 watchlist.txt。
-    requested = []
-    if REQUESTS_DIR.exists():
-        for f in sorted(REQUESTS_DIR.glob("*.txt")):
-            code = f.stem.strip()
-            if code and code not in codes and code not in requested:
-                requested.append(code)
-    if requested:
-        log("一鍵加入追蹤清單的請求，併入 watchlist.txt：" + "、".join(requested))
-        with WATCHLIST_FILE.open("a", encoding="utf-8") as fh:   # 只附加，保留原本的註解/排版
-            if text and not text.endswith("\n"):
-                fh.write("\n")
-            for code in requested:
-                fh.write(f"{code}   # 一鍵加入（自動併入）\n")
-        for f in REQUESTS_DIR.glob("*.txt"):
-            f.unlink()
-
-    all_codes = codes + requested
-    return all_codes if all_codes else DEFAULT_STOCKS
+    if WATCHLIST_FILE.exists():
+        codes = []
+        for line in WATCHLIST_FILE.read_text(encoding="utf-8").splitlines():
+            line = line.split("#")[0].strip()
+            if line:
+                codes.append(line)
+        if codes:
+            return codes
+    return DEFAULT_STOCKS
 
 
 def main():

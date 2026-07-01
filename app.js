@@ -45,12 +45,12 @@ function accentClass(v){ return "accent-"+(gainClass(v)==="gain"?"gain":"loss");
 function arrow(v){ return v>0?"▲":(v<0?"▼":"—"); }
 
 const REPO = "jackson910923/StockMeow";
-// 僅限「開 issue」權限、只綁定這個 repo 的 fine-grained token（見 builder/requests/README.md）。
-// 這串本來就會公開在前端程式碼裡（GitHub Pages 沒有後端能藏密鑰），所以權限刻意縮到最小。
-const ISSUE_TOKEN = "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";
-function requestListingUrl(code){        // 備援：開 GitHub「建立新檔案」頁面，檔名/內容已預填代號
-  const path = `builder/requests/${code}.txt`;
-  return `https://github.com/${REPO}/new/main?filename=${encodeURIComponent(path)}&value=${encodeURIComponent(code)}`;
+// 一鍵加入追蹤清單：開 GitHub「開新 issue」頁面，標題/內容已預填好。不需要任何 token
+// （GitHub 自家的 token 一旦公開在前端程式碼裡會被自動撤銷，測過真的會失效，所以不走這條路）。
+// 送出後 .github/workflows/add-request.yml 會自動讀取、併入 watchlist.txt、觸發更新、關閉 issue。
+function requestListingUrl(code){
+  const title = `追蹤請求: ${code}`, body = `自動請求加入追蹤清單：${code}`;
+  return `https://github.com/${REPO}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
 }
 function wasRequested(code){ return loadJSON("requested_codes_v1", []).includes(code); }
 function markRequested(code){
@@ -58,21 +58,9 @@ function markRequested(code){
   s.add(code);
   localStorage.setItem("requested_codes_v1", JSON.stringify([...s]));
 }
-// 一鍵送出追蹤請求：直接用 issue 開請求（真零點擊）；沒設定 token 或失敗就退回一鍵連結。
 function requestListing(code){
-  if(!ISSUE_TOKEN){ window.open(requestListingUrl(code), "_blank"); return; }
-  fetch(`https://api.github.com/repos/${REPO}/issues`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${ISSUE_TOKEN}`,
-      "Accept": "application/vnd.github+json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ title: `追蹤請求: ${code}`, body: `自動請求加入追蹤清單：${code}` })
-  }).then(r=>{
-    if(!r.ok) throw 0;
-    markRequested(code); render();
-  }).catch(()=>window.open(requestListingUrl(code), "_blank"));
+  window.open(requestListingUrl(code), "_blank");
+  markRequested(code); render();
 }
 function resolveName(code){
   return (DATA.stocks && DATA.stocks[code] && DATA.stocks[code].name)

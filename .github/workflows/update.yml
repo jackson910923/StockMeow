@@ -43,8 +43,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json names.json builder/watchlist.txt
-          git add -A builder/requests
+          git add data.json names.json
           if git diff --cached --quiet; then
             echo "資料沒有變化，跳過。"
           else
