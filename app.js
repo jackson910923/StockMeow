@@ -45,9 +45,34 @@ function accentClass(v){ return "accent-"+(gainClass(v)==="gain"?"gain":"loss");
 function arrow(v){ return v>0?"▲":(v<0?"▼":"—"); }
 
 const REPO = "jackson910923/StockMeow";
-function requestListingUrl(code){        // 一鍵加入追蹤清單：開 GitHub「建立新檔案」頁面，檔名/內容已預填代號
+// 僅限「開 issue」權限、只綁定這個 repo 的 fine-grained token（見 builder/requests/README.md）。
+// 這串本來就會公開在前端程式碼裡（GitHub Pages 沒有後端能藏密鑰），所以權限刻意縮到最小。
+const ISSUE_TOKEN = "";
+function requestListingUrl(code){        // 備援：開 GitHub「建立新檔案」頁面，檔名/內容已預填代號
   const path = `builder/requests/${code}.txt`;
   return `https://github.com/${REPO}/new/main?filename=${encodeURIComponent(path)}&value=${encodeURIComponent(code)}`;
+}
+function wasRequested(code){ return loadJSON("requested_codes_v1", []).includes(code); }
+function markRequested(code){
+  const s = new Set(loadJSON("requested_codes_v1", []));
+  s.add(code);
+  localStorage.setItem("requested_codes_v1", JSON.stringify([...s]));
+}
+// 一鍵送出追蹤請求：直接用 issue 開請求（真零點擊）；沒設定 token 或失敗就退回一鍵連結。
+function requestListing(code){
+  if(!ISSUE_TOKEN){ window.open(requestListingUrl(code), "_blank"); return; }
+  fetch(`https://api.github.com/repos/${REPO}/issues`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${ISSUE_TOKEN}`,
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ title: `追蹤請求: ${code}`, body: `自動請求加入追蹤清單：${code}` })
+  }).then(r=>{
+    if(!r.ok) throw 0;
+    markRequested(code); render();
+  }).catch(()=>window.open(requestListingUrl(code), "_blank"));
 }
 function resolveName(code){
   return (DATA.stocks && DATA.stocks[code] && DATA.stocks[code].name)
@@ -297,10 +322,13 @@ function renderSummary(rows){
 
 function card(r){
   if(r.missing){
+    const reqBlock = wasRequested(r.id)
+      ? `<div class="missing">「${r.name}」目前還沒有市價資料。已送出追蹤請求，等資料更新後（通常幾分鐘~明天）這張卡就會出現損益與走勢。</div>`
+      : `<div class="missing">「${r.name}」目前還沒有市價資料，加進追蹤清單後（約幾分鐘~明天）這張卡就會出現損益與走勢。</div>
+         <button class="request-btn" onclick="requestListing('${r.id}')">📌 一鍵送出追蹤請求</button>`;
     return `<section class="card missing-card">
       <div class="name-row"><div class="nm"><span class="name">${r.name}</span> <span class="code">${r.id}</span></div></div>
-      <div class="missing">「${r.name}」目前還沒有市價資料，加進追蹤清單後（commit 後約幾分鐘~明天）這張卡就會出現損益與走勢。</div>
-      <a class="request-btn" href="${requestListingUrl(r.id)}" target="_blank" rel="noopener">📌 一鍵加入追蹤清單（管理者用，需登入 GitHub）</a>
+      ${reqBlock}
       <div class="grid">
         <div class="cell"><div class="label">我有幾張</div><div class="value">${r.shares} 張</div></div>
         <div class="cell"><div class="label">當初一股買</div><div class="value">${num(r.cost)} 元</div></div>

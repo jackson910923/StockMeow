@@ -94,7 +94,8 @@ body{
 .missing{color:var(--sub);font-size:15px;margin-top:10px;line-height:1.6;}
 .missing-card::before{background:#cbd2dc;}
 .request-btn{display:inline-block;margin-top:12px;background:#eef3fb;color:var(--brand1);
-  border-radius:10px;padding:10px 14px;font-size:14px;font-weight:800;text-decoration:none;}
+  border:0;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:800;
+  text-decoration:none;font-family:inherit;cursor:pointer;}
 .request-btn:active{background:#dfe9f8;}
 
 /* 白話提醒 */

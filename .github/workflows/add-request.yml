@@ -1,0 +1,73 @@
+name: 冷門股請求（issue 自動加入追蹤清單）
+
+# 前端「一鍵送出追蹤請求」按鈕會用一個僅限 issues:write 的 token 開一個
+# 標題「追蹤請求: 代號」的 issue。這支 workflow 讀出代號、併入 builder/watchlist.txt、
+# 觸發 update.yml 重新產生資料，最後回覆並關閉 issue。
+# 只處理 issue 作者是本人帳號的請求，避免其他人手動開 issue 也被誤認成請求。
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+  actions: write   # 用來觸發 update.yml（workflow_dispatch）
+
+jobs:
+  handle:
+    if: >
+      startsWith(github.event.issue.title, '追蹤請求:') &&
+      github.event.issue.user.login == 'jackson910923'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 解析代號、加入 watchlist.txt（已存在就略過）
+        id: parse
+        run: |
+          CODE=$(echo "${{ github.event.issue.title }}" | grep -oE '[0-9]{4,6}[A-Za-z]?' | head -1)
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
+          if [ -z "$CODE" ]; then
+            echo "added=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if grep -qE "^$CODE([[:space:]]|$)" builder/watchlist.txt 2>/dev/null; then
+            echo "added=0" >> "$GITHUB_OUTPUT"
+          else
+            printf '%s   # 一鍵加入（issue #%s）\n' "$CODE" "${{ github.event.issue.number }}" >> builder/watchlist.txt
+            echo "added=1" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: commit watchlist.txt
+        if: steps.parse.outputs.added == '1'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add builder/watchlist.txt
+          git commit -m "加入追蹤清單：${{ steps.parse.outputs.code }}（issue #${{ github.event.issue.number }}）"
+          git push
+
+      - name: 觸發資料更新（update.yml）
+        if: steps.parse.outputs.added == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run update.yml
+
+      - name: 回覆並關閉 issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const code = "${{ steps.parse.outputs.code }}";
+            const added = "${{ steps.parse.outputs.added }}";
+            let body;
+            if (!code) body = "看不出來這是哪支股票代號，麻煩用「追蹤請求: 代號」的格式再開一次。";
+            else if (added === "0") body = `${code} 已經在追蹤清單裡了，不用重複加。`;
+            else body = `已把 ${code} 加進追蹤清單，資料更新中，網站幾分鐘內就會有這檔的行情。`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number, body
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number, state: "closed"
+            });
