@@ -45,7 +45,7 @@ function accentClass(v){ return "accent-"+(gainClass(v)==="gain"?"gain":"loss");
 function arrow(v){ return v>0?"▲":(v<0?"▼":"—"); }
 
 // 即時報價 Worker（冷門股一加就有基本資料，不用等每日 CI）。部署方式見 worker/README.md。
-const WORKER_URL = "";
+const WORKER_URL = "https://stockmeow-quote.jackson2002923.workers.dev";
 const liveQuotes = {};          // code -> Worker 回傳的即時資料（只存這個分頁記憶體，不落地）
 const liveAttempted = new Set();
 function fetchLiveQuote(code){
