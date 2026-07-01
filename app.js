@@ -358,7 +358,11 @@ function card(r){
   const signalBlock = sig ? `<div class="signal">${sig}<span class="sig-note">參考</span></div>` : "";
   const noticeBlk = noticeBox(r.notice, r.price, r.live);
   const liveBlock = r.live
-    ? `<div class="live-note">⚡ 即時資料（剛加入，情緒要等明天每日更新才會有；處置風險是近似估算版）</div>` : "";
+    ? `<div class="live-note">⚡ 即時資料（情緒要等明天每日更新才會有；處置風險是近似估算版）</div>
+       ${wasRequested(r.id)
+         ? `<div class="live-note">📌 已送出永久追蹤清單請求，處理後這裡就會有完整版</div>`
+         : `<button class="request-btn live-request-btn" onclick="requestListing('${r.id}')">📌 加入永久追蹤清單（明天起有完整情緒/精準處置風險）</button>`}`
+    : "";
   return `<section class="card ${accentClass(r.profit)}">
     <div class="name-row">
       <div class="nm"><span class="name">${r.name}</span> <span class="code">${r.id}</span></div>
