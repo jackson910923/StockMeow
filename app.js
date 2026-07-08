@@ -86,6 +86,7 @@ function loadNames(){
     .catch(()=>{NAMES_ALL={}; return {};});
 }
 
+// ── 標籤雲輔助 ─────────────────────────────────────────
 function bigPlayerText(v){
   if(v==="buy")  return "🟢 大戶買進";
   if(v==="sell") return "🔴 大戶賣出";
@@ -125,6 +126,7 @@ function sentimentText(s){
   }
   return t;
 }
+// ── 策略引擎 ──────────────────────────────────────────
 function marketTilt(s){
   if(!s) return 0;
   const b = s.bull||0, r = s.bear||0;
@@ -153,7 +155,7 @@ function miniInst(lbl, v){
   return (v>0?`${lbl}+` : `${lbl}-`) + s;
 }
 
-// 法人買賣超區塊 (優化為高密度表格)
+// 法人買賣超區塊 (修復完畢)
 function instnetRow(r){
   if(r.foreign_net==null && r.trust_net==null && r.dealer_net==null && r.total_net==null) return "";
   const item = (lbl, v) => {
@@ -171,18 +173,6 @@ function instnetRow(r){
       ${item("投信買賣超", r.trust_net)}
       ${item("自營買賣超", r.dealer_net)}
       <div class="flex justify-between items-center text-xs pt-1.5 border-t border-dashed border-slate-800/60 font-semibold">
-        <span class="text-slate-300">三大法人合計</span>
-        <span class="${totalCfg.text} font-mono">${fmtNet(r.total_net)}</span>
-      </div>
-    </div>`;
-}
-  const totalCfg = gainColorConfig(r.total_net || 0);
-  return `
-    <div class="mt-2.5 pt-2 border-t border-slate-800/80 space-y-1">
-      ${item("外資買賣超", r.foreign_net)}
-      ${item("投信買賣超", r.trust_net)}
-      ${item("自營買賣超", r.dealer_net)}
-      <div class="flex justify-between items-center text-[11px] pt-1 border-t border-dashed border-slate-800/60 font-semibold">
         <span class="text-slate-300">三大法人合計</span>
         <span class="${totalCfg.text} font-mono">${fmtNet(r.total_net)}</span>
       </div>
@@ -382,6 +372,40 @@ function card(r){
       : `<div class="text-[11px] bg-slate-900/80 border border-slate-800 text-slate-400 rounded-lg p-3 my-2">「${r.name}」尚無收錄。</div>
          <button class="w-full text-center bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-1.5 rounded-lg transition-colors" onclick="requestListing('${r.id}')">📌 一鍵送出追蹤請求</button>`;
     return `
+      <div class="bg-[#151D30] border border-slate-800 rounded-xl p-4 shadow-lg flex flex-col justify-between">
+        <div class="flex justify-between items-center mb-2">
+          <div class="flex items-center gap-1.5"><span class="text-sm font-bold text-slate-200">${r.name}</span><span class="text-xs font-mono text-slate-500">${r.id}</span></div>
+        </div>
+        ${reqBlock}
+        <div class="grid grid-cols-2 gap-2 bg-slate-950/40 p-2 rounded-lg text-xs font-mono mt-2">
+          <div><span class="text-slate-500 block text-[10px]">持股數量</span><span class="text-slate-300 font-bold">${r.shares} 張</span></div>
+          <div><span class="text-slate-500 block text-[10px]">均股成本</span><span class="text-slate-300 font-bold">${num(r.cost)} 元</span></div>
+        </div>
+      </div>`;
+  }
+
+  const cfg = gainColorConfig(r.profit);
+  const word = r.profit >= 0 ? "賺" : "賠";
+  const sign = r.profit >= 0 ? "+" : "−";
+  
+  const chips = [bigPlayerText(r.big_player), monthText(r.month), buzzText(r.buzz)]
+                .filter(Boolean).map(t=>`<span class="bg-slate-950/60 border border-slate-800/80 text-slate-400 font-mono px-1.5 py-0.5 rounded text-[10px]">${t}</span>`).join("");
+  
+  const sparkSvg = sparkline(r.spark);
+  const trendDir = (Array.isArray(r.spark) && r.spark.length > 1) ? r.spark[r.spark.length-1] - r.spark[0] : 0;
+  const sparkBlock = sparkSvg ? `<div class="mt-2.5 pt-2 border-t border-slate-800/60"><div class="text-[9px] text-slate-500 font-medium mb-1 tracking-wider uppercase">近季走勢線</div>${sparkSvg}</div>` : "";
+  
+  const alertBlock = (r.alerts && r.alerts.length) ? `<div class="mt-2 space-y-1">${r.alerts.map(a=>`<div class="text-[10px] bg-amber-500/5 border border-amber-500/10 text-amber-400/90 p-1.5 rounded-md font-medium">⚠️ ${a}</div>`).join("")}</div>` : "";
+  const sig = signalSummary(r);
+  const signalBlock = sig ? `<div class="text-[10px] bg-indigo-500/5 border border-indigo-500/10 text-indigo-400 p-2 rounded-lg font-medium flex justify-between items-center mt-2"><span>${sig}</span><span class="text-[9px] bg-indigo-500/20 px-1 rounded text-indigo-300">策略</span></div>` : "";
+  const noticeBlk = noticeBox(r.notice, r.price, r.live);
+  
+  const liveBlock = r.live
+    ? `<div class="text-[10px] text-amber-400 bg-amber-500/5 border border-amber-500/10 rounded-md p-1.5 mb-2 font-mono">⚡ 即時報價連線中` + 
+       (wasRequested(r.id) ? ` (已加入永久追蹤)` : ` <button class="text-rose-400 underline ml-1" onclick="requestListing('${r.id}')">[永續收錄]</button>`) + `</div>`
+    : "";
+
+  return `
     <div class="bg-[#151D30] border border-slate-800/90 rounded-2xl p-5 shadow-xl flex flex-col justify-between transition-all duration-300 hover:border-slate-700 hover:scale-[1.005]">
       <div class="flex justify-between items-start mb-1">
         <div>
@@ -413,6 +437,7 @@ function card(r){
       ${signalBlock}
       ${alertBlock}
       ${noticeBlk}
+      ${sparkBlock}
       
       <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-xs font-mono mt-1 pt-2 border-t border-slate-800/40">
         <div class="flex justify-between border-b border-slate-800/30 pb-1"><span class="text-slate-500">資產現值</span><span class="text-slate-300 font-semibold">${money(r.mv)}</span></div>
@@ -428,77 +453,6 @@ function card(r){
       ` : ""}
 
       <div class="flex flex-wrap gap-1.5 mt-3">${chips}</div>
-    </div>`;
-  }
-
-  const cfg = gainColorConfig(r.profit);
-  const word = r.profit >= 0 ? "賺" : "賠";
-  const sign = r.profit >= 0 ? "+" : "−";
-  
-  const chips = [bigPlayerText(r.big_player), monthText(r.month), buzzText(r.buzz)]
-                .filter(Boolean).map(t=>`<span class="bg-slate-950/60 border border-slate-800/80 text-slate-400 font-mono px-1.5 py-0.5 rounded text-[10px]">${t}</span>`).join("");
-  
-  const sparkSvg = sparkline(r.spark);
-  const trendDir = (Array.isArray(r.spark) && r.spark.length > 1) ? r.spark[r.spark.length-1] - r.spark[0] : 0;
-  const sparkBlock = sparkSvg ? `<div class="mt-2.5 pt-2 border-t border-slate-800/60"><div class="text-[9px] text-slate-500 font-medium mb-1 tracking-wider uppercase">近季走勢線</div>${sparkSvg}</div>` : "";
-  
-  const alertBlock = (r.alerts && r.alerts.length) ? `<div class="mt-2 space-y-1">${r.alerts.map(a=>`<div class="text-[10px] bg-amber-500/5 border border-amber-500/10 text-amber-400/90 p-1.5 rounded-md font-medium">⚠️ ${a}</div>`).join("")}</div>` : "";
-  const sig = signalSummary(r);
-  const signalBlock = sig ? `<div class="text-[10px] bg-indigo-500/5 border border-indigo-500/10 text-indigo-400 p-2 rounded-lg font-medium flex justify-between items-center mt-2"><span>${sig}</span><span class="text-[9px] bg-indigo-500/20 px-1 rounded text-indigo-300">策略</span></div>` : "";
-  const noticeBlk = noticeBox(r.notice, r.price, r.live);
-  
-  const liveBlock = r.live
-    ? `<div class="text-[10px] text-amber-400 bg-amber-500/5 border border-amber-500/10 rounded-md p-1.5 mb-2 font-mono">⚡ 即時報價連線中` + 
-       (wasRequested(r.id) ? ` (已加入永久追蹤)` : ` <button class="text-rose-400 underline ml-1" onclick="requestListing('${r.id}')">[永續收錄]</button>`) + `</div>`
-    : "";
-
-  return `
-    <div class="bg-[#151D30] border border-slate-800/90 rounded-2xl p-4 shadow-xl flex flex-col justify-between transition-all duration-300 hover:border-slate-700 hover:scale-[1.005]">
-      <div class="flex justify-between items-start">
-        <div>
-          <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="text-sm font-bold text-slate-100 tracking-tight">${r.name}</span>
-            <span class="text-xs font-mono text-slate-500">${r.id}</span>
-          </div>
-          <p class="text-[11px] text-slate-400 mt-0.5 font-mono">持倉: ${r.shares}張 · 成本: ${num(r.cost)}</p>
-        </div>
-        <div class="text-right">
-          <p class="text-base font-mono font-black text-slate-100 tracking-tight">${num(r.price)}</p>
-          ${todayBadge(r.day)}
-        </div>
-      </div>
-
-      ${liveBlock}
-
-      <div class="bg-slate-950/30 border border-slate-800/40 rounded-xl p-3 my-2.5 flex justify-between items-center">
-        <div>
-          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">持有損益金額</span>
-          <span class="text-lg font-black font-mono ${cfg.text}">${word} ${money(Math.abs(r.profit))}</span>
-        </div>
-        <div class="text-right">
-          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">報酬率</span>
-          <span class="text-sm font-black font-mono ${cfg.text}">${sign}${Math.abs(Math.round(r.pct))}%</span>
-        </div>
-      </div>
-
-      ${signalBlock}
-      ${alertBlock}
-      ${noticeBlk}
-      
-      <div class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px] font-mono mt-1 pt-1 border-t border-slate-800/40">
-        <div class="flex justify-between border-b border-slate-800/30 pb-0.5"><span class="text-slate-500">資產現值</span><span class="text-slate-300 font-semibold">${money(r.mv)}</span></div>
-        <div class="flex justify-between border-b border-slate-800/30 pb-0.5"><span class="text-slate-500">今日成交</span><span class="text-slate-300 font-semibold">${r.volume!=null?fmtVol(r.volume):"—"}</span></div>
-      </div>
-
-      ${instnetRow(r)}
-
-      ${r.sentiment?.posts ? `
-        <div class="mt-2.5 bg-slate-950/20 border border-slate-800/40 p-2 rounded-lg text-[10px] text-slate-400 leading-relaxed font-sans">
-          ${sentimentText(r.sentiment)}
-        </div>
-      ` : ""}
-
-      <div class="flex flex-wrap gap-1 mt-2.5">${chips}</div>
     </div>`;
 }
 
@@ -540,7 +494,7 @@ function renderAllocation(rows){
     </div>`;
 }
 
-// 熱門股卡片美化 (仿雅虎財經/TradingView 行情清單)
+// 遞迴渲染熱門股卡片美化
 function hotCard(code){
   const s = DATA.stocks && DATA.stocks[code];
   if(!s) return "";
