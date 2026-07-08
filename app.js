@@ -159,11 +159,23 @@ function instnetRow(r){
   const item = (lbl, v) => {
     if(v==null) return "";
     const cfg = gainColorConfig(v);
-    return `<div class="flex justify-between items-center text-[11px]">
+    return `<div class="flex justify-between items-center text-xs py-0.5">
               <span class="text-slate-400 font-medium">${lbl}</span>
               <span class="${cfg.text} font-bold font-mono">${fmtNet(v)}</span>
             </div>`;
   };
+  const totalCfg = gainColorConfig(r.total_net || 0);
+  return `
+    <div class="mt-3 pt-2 border-t border-slate-800/80 space-y-1">
+      ${item("外資買賣超", r.foreign_net)}
+      ${item("投信買賣超", r.trust_net)}
+      ${item("自營買賣超", r.dealer_net)}
+      <div class="flex justify-between items-center text-xs pt-1.5 border-t border-dashed border-slate-800/60 font-semibold">
+        <span class="text-slate-300">三大法人合計</span>
+        <span class="${totalCfg.text} font-mono">${fmtNet(r.total_net)}</span>
+      </div>
+    </div>`;
+}
   const totalCfg = gainColorConfig(r.total_net || 0);
   return `
     <div class="mt-2.5 pt-2 border-t border-slate-800/80 space-y-1">
@@ -370,16 +382,53 @@ function card(r){
       : `<div class="text-[11px] bg-slate-900/80 border border-slate-800 text-slate-400 rounded-lg p-3 my-2">「${r.name}」尚無收錄。</div>
          <button class="w-full text-center bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-1.5 rounded-lg transition-colors" onclick="requestListing('${r.id}')">📌 一鍵送出追蹤請求</button>`;
     return `
-      <div class="bg-[#151D30] border border-slate-800 rounded-xl p-4 shadow-lg flex flex-col justify-between">
-        <div class="flex justify-between items-center mb-2">
-          <div class="flex items-center gap-1.5"><span class="text-sm font-bold text-slate-200">${r.name}</span><span class="text-xs font-mono text-slate-500">${r.id}</span></div>
+    <div class="bg-[#151D30] border border-slate-800/90 rounded-2xl p-5 shadow-xl flex flex-col justify-between transition-all duration-300 hover:border-slate-700 hover:scale-[1.005]">
+      <div class="flex justify-between items-start mb-1">
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-base font-bold text-slate-100 tracking-tight">${r.name}</span>
+            <span class="text-xs font-mono text-slate-500 font-medium">${r.id}</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1 font-mono">持倉: ${r.shares}張 · 成本: ${num(r.cost)}</p>
         </div>
-        ${reqBlock}
-        <div class="grid grid-cols-2 gap-2 bg-slate-950/40 p-2 rounded-lg text-xs font-mono mt-2">
-          <div><span class="text-slate-500 block text-[10px]">持股數量</span><span class="text-slate-300 font-bold">${r.shares} 張</span></div>
-          <div><span class="text-slate-500 block text-[10px]">均股成本</span><span class="text-slate-300 font-bold">${num(r.cost)} 元</span></div>
+        <div class="text-right">
+          <p class="text-lg font-mono font-black text-slate-100 tracking-tight leading-none mb-1">${num(r.price)}</p>
+          ${todayBadge(r.day)}
         </div>
-      </div>`;
+      </div>
+
+      ${liveBlock}
+
+      <div class="bg-slate-950/30 border border-slate-800/40 rounded-xl p-3.5 my-3 flex justify-between items-center">
+        <div>
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-0.5">持有損益金額</span>
+          <span class="text-xl font-black font-mono ${cfg.text}">${word} ${money(Math.abs(r.profit))}</span>
+        </div>
+        <div class="text-right">
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-0.5">報酬率</span>
+          <span class="text-base font-black font-mono ${cfg.text}">${sign}${Math.abs(Math.round(r.pct))}%</span>
+        </div>
+      </div>
+
+      ${signalBlock}
+      ${alertBlock}
+      ${noticeBlk}
+      
+      <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-xs font-mono mt-1 pt-2 border-t border-slate-800/40">
+        <div class="flex justify-between border-b border-slate-800/30 pb-1"><span class="text-slate-500">資產現值</span><span class="text-slate-300 font-semibold">${money(r.mv)}</span></div>
+        <div class="flex justify-between border-b border-slate-800/30 pb-1"><span class="text-slate-500">今日成交</span><span class="text-slate-300 font-semibold">${r.volume!=null?fmtVol(r.volume):"—"}</span></div>
+      </div>
+
+      ${instnetRow(r)}
+
+      ${r.sentiment?.posts ? `
+        <div class="mt-3 bg-slate-950/20 border border-slate-800/40 p-2.5 rounded-lg text-[11px] text-slate-400 leading-relaxed font-sans">
+          ${sentimentText(r.sentiment)}
+        </div>
+      ` : ""}
+
+      <div class="flex flex-wrap gap-1.5 mt-3">${chips}</div>
+    </div>`;
   }
 
   const cfg = gainColorConfig(r.profit);
@@ -545,11 +594,11 @@ function instRankList(items){
   return items.map((it,i)=>{
     const cfg = gainColorConfig(it.net);
     return `
-      <div class="flex items-center justify-between py-1.5 border-b border-slate-800/40 font-mono text-xs">
+      <div class="flex items-center justify-between py-2 border-b border-slate-800/40 font-mono text-xs">
         <div class="flex items-center gap-2">
-          <span class="w-5 text-[10px] text-slate-500 font-bold">#${String(i+1).padStart(2,'0')}</span>
+          <span class="w-6 text-[11px] text-slate-500 font-bold">#${String(i+1).padStart(2,'0')}</span>
           <span class="text-slate-300 font-medium">${it.name}</span>
-          <span class="text-[10px] text-slate-600">${it.code}</span>
+          <span class="text-[11px] text-slate-600">${it.code}</span>
         </div>
         <span class="${cfg.text} font-bold">${num(Math.abs(it.net),0)} 張</span>
       </div>`;
