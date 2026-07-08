@@ -1,10 +1,5 @@
 name: 冷門股請求（issue 自動加入追蹤清單）
 
-# 前端「一鍵加入追蹤清單」按鈕開一個預填好標題「追蹤請求: 代號」的 GitHub
-# 「開新 issue」頁面（不需要任何 token——GitHub 自家的 token 只要出現在公開
-# 前端程式碼裡就會被自動撤銷，測過真的會失效）。送出後這支 workflow 讀出
-# 代號、併入 builder/watchlist.txt、觸發 update.yml 重新產生資料，最後回覆並關閉 issue。
-# 只處理 issue 作者是本人帳號的請求，避免其他人手動開 issue 也被誤認成請求。
 on:
   issues:
     types: [opened]
@@ -41,12 +36,16 @@ jobs:
 
       - name: commit watchlist.txt
         if: steps.parse.outputs.added == '1'
+        env:
+          # 使用您剛剛在 Secrets 設定的 GH_TOKEN 確保驗證成功
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add builder/watchlist.txt
           git commit -m "加入追蹤清單：${{ steps.parse.outputs.code }}（issue #${{ github.event.issue.number }}）"
-          git push
+          # 使用帶有 Token 的遠端網址進行安全 Push
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
 
       - name: 觸發資料更新（update.yml）
         if: steps.parse.outputs.added == '1'
@@ -64,6 +63,7 @@ jobs:
             if (!code) body = "看不出來這是哪支股票代號，麻煩用「追蹤請求: 代號」的格式再開一次。";
             else if (added === "0") body = `${code} 已經在追蹤清單裡了，不用重複加。`;
             else body = `已把 ${code} 加進追蹤清單，資料更新中，網站幾分鐘內就會有這檔的行情。`;
+            
             await github.rest.issues.createComment({
               owner: context.repo.owner, repo: context.repo.repo,
               issue_number: context.issue.number, body
