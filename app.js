@@ -161,19 +161,19 @@ function instnetRow(r){
   const item = (lbl, v) => {
     if(v==null) return "";
     const cfg = gainColorConfig(v);
-    return `<div class="flex justify-between items-center text-xs py-0.5">
+    return `<div class="flex justify-between items-center text-sm py-0.5">
               <span class="text-slate-400 font-medium">${lbl}</span>
               <span class="${cfg.text} font-bold font-mono">${fmtNet(v)}</span>
             </div>`;
   };
   const totalCfg = gainColorConfig(r.total_net || 0);
   return `
-    <div class="mt-3 pt-2 border-t border-slate-800/80 space-y-1">
+    <div class="mt-3.5 pt-2 border-t border-slate-800/80 space-y-1.5">
       ${item("外資買賣超", r.foreign_net)}
       ${item("投信買賣超", r.trust_net)}
       ${item("自營買賣超", r.dealer_net)}
-      <div class="flex justify-between items-center text-xs pt-1.5 border-t border-dashed border-slate-800/60 font-semibold">
-        <span class="text-slate-300">三大法人合計</span>
+      <div class="flex justify-between items-center text-sm pt-2 border-t border-dashed border-slate-800/60 font-semibold">
+        <span class="text-slate-200">三大法人合計</span>
         <span class="${totalCfg.text} font-mono">${fmtNet(r.total_net)}</span>
       </div>
     </div>`;
@@ -210,30 +210,34 @@ function noticeBox(n, price, live){
   if(!n) return "";
   const danger = n.soonest===0 || n.on_notice;
   const warn = !danger && (n.soonest!=null || n.to_disp<=1);
-  const bgCls = danger ? "bg-rose-500/5 border-rose-500/20 text-rose-300" : warn ? "bg-amber-500/5 border-amber-500/20 text-amber-300" : "bg-slate-900/40 border-slate-800 text-slate-400";
+  const bgCls = danger ? "bg-rose-500/5 border-rose-500/20" : warn ? "bg-amber-500/5 border-amber-500/20" : "bg-slate-900/40 border-slate-800/80";
   const badgeCls = danger ? "bg-rose-500/20 text-rose-400" : warn ? "bg-amber-500/20 text-amber-400" : "bg-slate-800 text-slate-400";
   const filled = Math.max(0, Math.min(100, Math.round((n.in10/6)*100)));
   
-  let thr;
-  if(n.up!=null || n.down!=null) {
-    const p=[];
-    if(n.up!=null)   p.push(`漲過 ${num(n.up)}` + (n.up_reach ? "" : "(明日極限外)"));
-    if(n.down!=null) p.push(`跌破 ${num(n.down)}` + (n.down_reach ? "" : "(明日極限外)"));
-    thr = `<div class="text-[10px] leading-tight text-slate-400 mt-1"><b>注意條件：</b>收盤 ${p.join(" 或 ")}</div>`;
-  } else {
-    thr = "";
+  let thrRows = [];
+  if(n.up!=null) {
+    const reachTxt = n.up_reach ? `<span class="text-rose-400 font-bold">觸及率 ${pctTo(price, n.up)}</span>` : `<span class="text-slate-500">明日漲停也碰不到</span>`;
+    thrRows.push(`<div class="flex justify-between items-center py-0.5"><span>📈 若收盤 <b>漲過 ${num(n.up)}</b></span>${reachTxt}</div>`);
   }
+  if(n.down!=null) {
+    const reachTxt = n.down_reach ? `<span class="text-emerald-400 font-bold">觸及率 ${pctTo(price, n.down)}</span>` : `<span class="text-slate-500">明日跌停也碰不到</span>`;
+    thrRows.push(`<div class="flex justify-between items-center py-0.5"><span>📉 若收盤 <b>跌破 ${num(n.down)}</b></span>${reachTxt}</div>`);
+  }
+  
+  const thrBlock = thrRows.length 
+    ? `<div class="mt-2.5 pt-2 border-t border-slate-800/60 text-xs text-slate-300 space-y-1 font-sans">${thrRows.join("")}<p class="text-[11px] text-slate-500 mt-1">※ 滿足以上任一條件，隔日可能再次被列為注意股</p></div>` 
+    : "";
 
   return `
-    <div class="border rounded-xl p-2.5 my-2.5 ${bgCls}">
-      <div class="flex justify-between items-center">
-        <span class="text-[11px] font-bold flex items-center gap-1">📋 ${noticeHead(n)}</span>
-        <span class="text-[9px] font-mono px-1.5 py-0.5 rounded ${badgeCls}">觸及量 ${n.in10}/6</span>
+    <div class="border rounded-xl p-3.5 my-3 ${bgCls}">
+      <div class="flex justify-between items-center mb-1.5">
+        <span class="text-xs font-bold text-slate-200 flex items-center gap-1">📋 風險狀態：${noticeHead(n)}</span>
+        <span class="text-xs font-mono font-bold px-2 py-0.5 rounded ${badgeCls}">近10日注意 ${n.in10}/6 次</span>
       </div>
-      <div class="w-full bg-slate-950 h-1 rounded-full overflow-hidden mt-1.5">
-        <div class="${danger ? 'bg-rose-500' : warn ? 'bg-amber-500' : 'bg-slate-700'} h-full" style="width:${filled}%"></div>
+      <div class="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden">
+        <div class="${danger ? 'bg-rose-500' : warn ? 'bg-amber-500' : 'bg-slate-700'} h-full transition-all duration-500" style="width:${filled}%"></div>
       </div>
-      ${thr}
+      ${thrBlock}
     </div>`;
 }
 
@@ -368,18 +372,18 @@ function renderSummary(rows){
 function card(r){
   if(r.missing){
     const reqBlock = wasRequested(r.id)
-      ? `<div class="text-[11px] bg-slate-900/80 border border-slate-800 text-slate-400 rounded-lg p-3 my-2">「${r.name}」尚無市價資料，已發出追蹤，等待後端批次計算併入。</div>`
-      : `<div class="text-[11px] bg-slate-900/80 border border-slate-800 text-slate-400 rounded-lg p-3 my-2">「${r.name}」尚無收錄。</div>
+      ? `<div class="text-xs bg-slate-900/80 border border-slate-800 text-slate-400 rounded-lg p-3 my-2">「${r.name}」尚無市價資料，已發出追蹤，等待後端批次計算併入。</div>`
+      : `<div class="text-xs bg-slate-900/80 border border-slate-800 text-slate-400 rounded-lg p-3 my-2">「${r.name}」尚無收錄。</div>
          <button class="w-full text-center bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-1.5 rounded-lg transition-colors" onclick="requestListing('${r.id}')">📌 一鍵送出追蹤請求</button>`;
     return `
-      <div class="bg-[#151D30] border border-slate-800 rounded-xl p-4 shadow-lg flex flex-col justify-between">
+      <div class="bg-[#151D30] border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between">
         <div class="flex justify-between items-center mb-2">
-          <div class="flex items-center gap-1.5"><span class="text-sm font-bold text-slate-200">${r.name}</span><span class="text-xs font-mono text-slate-500">${r.id}</span></div>
+          <div class="flex items-center gap-1.5"><span class="text-md font-bold text-slate-200">${r.name}</span><span class="text-xs font-mono text-slate-500">${r.id}</span></div>
         </div>
         ${reqBlock}
-        <div class="grid grid-cols-2 gap-2 bg-slate-950/40 p-2 rounded-lg text-xs font-mono mt-2">
-          <div><span class="text-slate-500 block text-[10px]">持股數量</span><span class="text-slate-300 font-bold">${r.shares} 張</span></div>
-          <div><span class="text-slate-500 block text-[10px]">均股成本</span><span class="text-slate-300 font-bold">${num(r.cost)} 元</span></div>
+        <div class="grid grid-cols-2 gap-2 bg-slate-950/40 p-3 rounded-lg text-sm font-mono mt-2">
+          <div><span class="text-slate-500 block text-xs">持股數量</span><span class="text-slate-300 font-bold">${r.shares} 張</span></div>
+          <div><span class="text-slate-500 block text-xs">均股成本</span><span class="text-slate-300 font-bold">${num(r.cost)} 元</span></div>
         </div>
       </div>`;
   }
@@ -389,48 +393,48 @@ function card(r){
   const sign = r.profit >= 0 ? "+" : "−";
   
   const chips = [bigPlayerText(r.big_player), monthText(r.month), buzzText(r.buzz)]
-                .filter(Boolean).map(t=>`<span class="bg-slate-950/60 border border-slate-800/80 text-slate-400 font-mono px-1.5 py-0.5 rounded text-[10px]">${t}</span>`).join("");
+                .filter(Boolean).map(t=>`<span class="bg-slate-950/60 border border-slate-800/80 text-slate-400 font-mono px-2 py-0.5 rounded text-xs">${t}</span>`).join("");
   
   const sparkSvg = sparkline(r.spark);
   const trendDir = (Array.isArray(r.spark) && r.spark.length > 1) ? r.spark[r.spark.length-1] - r.spark[0] : 0;
-  const sparkBlock = sparkSvg ? `<div class="mt-2.5 pt-2 border-t border-slate-800/60"><div class="text-[9px] text-slate-500 font-medium mb-1 tracking-wider uppercase">近季走勢線</div>${sparkSvg}</div>` : "";
+  const sparkBlock = sparkSvg ? `<div class="mt-3 pt-2.5 border-t border-slate-800/60"><div class="text-[10px] text-slate-500 font-bold mb-1 tracking-wider uppercase">近季走勢軌跡</div>${sparkSvg}</div>` : "";
   
-  const alertBlock = (r.alerts && r.alerts.length) ? `<div class="mt-2 space-y-1">${r.alerts.map(a=>`<div class="text-[10px] bg-amber-500/5 border border-amber-500/10 text-amber-400/90 p-1.5 rounded-md font-medium">⚠️ ${a}</div>`).join("")}</div>` : "";
+  const alertBlock = (r.alerts && r.alerts.length) ? `<div class="mt-2 space-y-1">${r.alerts.map(a=>`<div class="text-xs bg-amber-500/5 border border-amber-500/10 text-amber-400 p-2 rounded-md font-medium">⚠️ ${a}</div>`).join("")}</div>` : "";
   const sig = signalSummary(r);
-  const signalBlock = sig ? `<div class="text-[10px] bg-indigo-500/5 border border-indigo-500/10 text-indigo-400 p-2 rounded-lg font-medium flex justify-between items-center mt-2"><span>${sig}</span><span class="text-[9px] bg-indigo-500/20 px-1 rounded text-indigo-300">策略</span></div>` : "";
+  const signalBlock = sig ? `<div class="text-xs bg-indigo-500/5 border border-indigo-500/10 text-indigo-400 p-2.5 rounded-lg font-medium flex justify-between items-center mt-2.5"><span>${sig}</span><span class="text-[10px] bg-indigo-500/20 px-1.5 py-0.5 rounded text-indigo-300">策略</span></div>` : "";
   const noticeBlk = noticeBox(r.notice, r.price, r.live);
   
   const liveBlock = r.live
-    ? `<div class="text-[10px] text-amber-400 bg-amber-500/5 border border-amber-500/10 rounded-md p-1.5 mb-2 font-mono">⚡ 即時報價連線中` + 
+    ? `<div class="text-xs text-amber-400 bg-amber-500/5 border border-amber-500/10 rounded-md p-2 mb-2 font-mono">⚡ 即時報價連線中` + 
        (wasRequested(r.id) ? ` (已加入永久追蹤)` : ` <button class="text-rose-400 underline ml-1" onclick="requestListing('${r.id}')">[永續收錄]</button>`) + `</div>`
     : "";
 
   return `
-    <div class="bg-[#151D30] border border-slate-800/90 rounded-2xl p-5 shadow-xl flex flex-col justify-between transition-all duration-300 hover:border-slate-700 hover:scale-[1.005]">
-      <div class="flex justify-between items-start mb-1">
+    <div class="bg-[#151D30] border border-slate-800/90 rounded-2xl p-5 shadow-xl flex flex-col justify-between transition-all duration-300 hover:border-slate-700 hover:scale-[1.002]">
+      <div class="flex justify-between items-start">
         <div>
           <div class="flex items-center gap-2 flex-wrap">
-            <span class="text-base font-bold text-slate-100 tracking-tight">${r.name}</span>
-            <span class="text-xs font-mono text-slate-500 font-medium">${r.id}</span>
+            <span class="text-md font-black text-slate-100 tracking-tight">${r.name}</span>
+            <span class="text-xs font-mono text-slate-500 font-bold">${r.id}</span>
           </div>
-          <p class="text-xs text-slate-400 mt-1 font-mono">持倉: ${r.shares}張 · 成本: ${num(r.cost)}</p>
+          <p class="text-xs text-slate-400 mt-1 font-mono">持倉: ${r.shares} 換算張數 · 成本: ${num(r.cost)} 元</p>
         </div>
         <div class="text-right">
-          <p class="text-lg font-mono font-black text-slate-100 tracking-tight leading-none mb-1">${num(r.price)}</p>
+          <p class="text-xl font-mono font-black text-slate-100 tracking-tight leading-none mb-1.5">${num(r.price)}</p>
           ${todayBadge(r.day)}
         </div>
       </div>
 
       ${liveBlock}
 
-      <div class="bg-slate-950/30 border border-slate-800/40 rounded-xl p-3.5 my-3 flex justify-between items-center">
+      <div class="bg-slate-950/30 border border-slate-800/40 rounded-xl p-4 my-3 flex justify-between items-center">
         <div>
-          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-0.5">持有損益金額</span>
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-0.5">持有損益金額</span>
           <span class="text-xl font-black font-mono ${cfg.text}">${word} ${money(Math.abs(r.profit))}</span>
         </div>
         <div class="text-right">
-          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-0.5">報酬率</span>
-          <span class="text-base font-black font-mono ${cfg.text}">${sign}${Math.abs(Math.round(r.pct))}%</span>
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-0.5">預估報酬率</span>
+          <span class="text-lg font-black font-mono ${cfg.text}">${sign}${Math.abs(Math.round(r.pct))}%</span>
         </div>
       </div>
 
@@ -439,20 +443,20 @@ function card(r){
       ${noticeBlk}
       ${sparkBlock}
       
-      <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-xs font-mono mt-1 pt-2 border-t border-slate-800/40">
-        <div class="flex justify-between border-b border-slate-800/30 pb-1"><span class="text-slate-500">資產現值</span><span class="text-slate-300 font-semibold">${money(r.mv)}</span></div>
-        <div class="flex justify-between border-b border-slate-800/30 pb-1"><span class="text-slate-500">今日成交</span><span class="text-slate-300 font-semibold">${r.volume!=null?fmtVol(r.volume):"—"}</span></div>
+      <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm font-mono mt-2 pt-2.5 border-t border-slate-800/40">
+        <div class="flex justify-between border-b border-slate-800/30 pb-1"><span class="text-slate-500">資產現值</span><span class="text-slate-200 font-bold">${money(r.mv)}</span></div>
+        <div class="flex justify-between border-b border-slate-800/30 pb-1"><span class="text-slate-500">今日成交</span><span class="text-slate-200 font-bold">${r.volume!=null?fmtVol(r.volume):"—"}</span></div>
       </div>
 
       ${instnetRow(r)}
 
       ${r.sentiment?.posts ? `
-        <div class="mt-3 bg-slate-950/20 border border-slate-800/40 p-2.5 rounded-lg text-[11px] text-slate-400 leading-relaxed font-sans">
+        <div class="mt-3.5 bg-slate-950/20 border border-slate-800/40 p-2.5 rounded-lg text-xs text-slate-400 leading-relaxed font-sans">
           ${sentimentText(r.sentiment)}
         </div>
       ` : ""}
 
-      <div class="flex flex-wrap gap-1.5 mt-3">${chips}</div>
+      <div class="flex flex-wrap gap-1.5 mt-3.5">${chips}</div>
     </div>`;
 }
 
