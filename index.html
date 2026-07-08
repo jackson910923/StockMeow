@@ -1,107 +1,149 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+<script src="https://cdn.tailwindcss.com"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#27406b">
-<title>我的持股</title>
+<meta name="theme-color" content="#0F172A">
+<title>我的持股 - 專業金融儀表板</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="我的持股">
-<link rel="stylesheet" href="styles.css">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          finBg: '#0B0F19',
+          finCard: '#151D30',
+          finBorder: 'rgba(255, 255, 255, 0.06)'
+        }
+      }
+    }
+  }
+</script>
+<style>
+  /* 保留設定底層抽屜與遮罩的必要動畫與定位，不與 Tailwind 衝突 */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 50; transition: all 0.3s; }
+  .sheet { position: fixed; bottom: 0; left: 0; right: 0; background: #151D30; border-top: 1px solid rgba(255,255,255,0.1); border-radius: 20px 20px 0 0; max-height: 85vh; overflow-y: auto; z-index: 60; }
+  /* 隱藏原生網頁滾動條讓畫面更乾淨 */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0B0F19; }
+  ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 3px; }
+</style>
 </head>
-<body>
-  <header class="app-header">
-    <div class="wrap">
-      <div class="bar">
-        <h1>我的持股</h1>
-        <button class="gear" id="openSettings" title="設定" aria-label="設定">⚙️</button>
+<body class="bg-[#0B0F19] text-slate-100 font-sans min-h-screen selection:bg-rose-500/30">
+
+  <header class="sticky top-0 z-40 w-full border-b border-slate-800 bg-[#151D30]/80 backdrop-blur-md px-4 lg:px-8 py-3.5">
+    <div class="max-w-[1600px] mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <h1 class="text-xl font-black bg-gradient-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent tracking-tight">STOCKMEOW</h1>
+        <span class="text-xs font-medium text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700/50" id="updated">同步中...</span>
+        <span class="text-xs font-semibold bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20" id="sample" hidden>範例假資料</span>
       </div>
-      <div class="updated" id="updated"></div>
-      <span class="sample-badge" id="sample" hidden>範例假資料</span>
+      <button class="text-xl p-2 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer" id="openSettings" title="設定" aria-label="設定">⚙️</button>
     </div>
   </header>
 
-  <div class="wrap">
-    <section class="summary" id="summary" hidden></section>
-    <main id="cards"></main>
-    <section id="allocation" hidden></section>
-    <div class="hot-head">
-      <h2 class="sec-title" id="hotTitle" hidden>🔥 今日熱門（成交量前 10）</h2>
-      <select id="hotSort" class="hot-sort" hidden aria-label="熱門股排序依據">
-        <option value="volume">依成交量</option>
-        <option value="change">依漲跌幅</option>
-        <option value="buzz">依討論熱度</option>
-      </select>
-    </div>
-    <div id="hotCards" class="hot-grid"></div>
-    <div id="instRankWrap" hidden>
-      <h2 class="sec-title">📊 外資買賣超排行（前10，含ETF）</h2>
-      <div class="inst-rank-grid">
-        <div class="inst-rank-col">
-          <h3 class="inst-rank-head buy">🔺 買超排行</h3>
-          <ol id="instBuyRank" class="inst-rank-list"></ol>
+  <div class="max-w-[1600px] mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <main class="col-span-1 lg:col-span-8 flex flex-col gap-6">
+      <section class="bg-[#151D30] border border-slate-800 rounded-2xl p-5 shadow-xl" id="summary" hidden></section>
+      
+      <div class="flex flex-col gap-3">
+        <div class="flex justify-between items-center">
+          <h2 class="text-md font-bold text-slate-300 tracking-wide flex items-center gap-2">📂 我的核心持股</h2>
         </div>
-        <div class="inst-rank-col">
-          <h3 class="inst-rank-head sell">🔻 賣超排行</h3>
-          <ol id="instSellRank" class="inst-rank-list"></ol>
-        </div>
-      </div>
-    </div>
-    <aside id="riskPanel" class="risk-panel" hidden>
-      <h2 class="sec-title">📋 注意／處置風險看板</h2>
-      <div class="risk-hint">持股與今日熱門股，依風險程度排序，方便盤後快速掃描。</div>
-      <div id="riskBoard" class="risk-board"></div>
-    </aside>
-    <footer class="disclaimer">
-      本頁所有數字與「參考」傾向僅供參考，<b>不是投資建議</b>，請自行判斷、風險自負。<br>
-      資料來源：FinMind、證交所、CMoney 股市同學會（公開資料）。
-    </footer>
-  </div>
-
-  <!-- 設定（底部抽屜） -->
-  <div class="overlay" id="settings" hidden>
-    <div class="sheet">
-      <div class="sheet-head">
-        <h2>設定</h2>
-        <button class="x" id="closeSettings" aria-label="關閉">✕</button>
+        <div id="cards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
 
-      <section>
-        <h3>我的持股</h3>
-        <div id="holdingList"></div>
-        <div class="add-row">
-          <input id="addCode" list="stockList" placeholder="代號或名字（例：2330 或 台積電）" aria-label="股票代號" autocomplete="off">
-          <input id="addShares" type="number" min="0" step="1" placeholder="張數" aria-label="張數">
-          <input id="addCost" type="number" min="0" step="0.01" placeholder="成本/股" aria-label="成本">
-          <button class="primary" id="addBtn">新增</button>
+      <section id="allocation" class="bg-[#151D30] border border-slate-800 rounded-2xl p-5 shadow-xl" hidden></section>
+      
+      <div class="bg-[#151D30] border border-slate-800 rounded-2xl p-5 shadow-xl">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+          <h2 class="text-md font-bold text-slate-200 flex items-center gap-2" id="hotTitle" hidden>🔥 今日熱門（成交量前 10）</h2>
+          <select id="hotSort" class="bg-[#0B0F19] text-xs text-slate-300 border border-slate-700 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-rose-500" hidden aria-label="熱門股排序依據">
+            <option value="volume">依成交量</option>
+            <option value="change">依漲跌幅</option>
+            <option value="buzz">依討論熱度</option>
+          </select>
         </div>
-        <datalist id="stockList"></datalist>
-        <div class="hint">任何上市櫃股票都能加（打代號或名字搜尋）。持股只存在這台裝置的瀏覽器，不會上傳、不會進 GitHub。</div>
+        <div id="hotCards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </main>
+
+    <aside class="col-span-1 lg:col-span-4 flex flex-col gap-6 lg:border-l lg:border-slate-800/60 lg:pl-6">
+      
+      <section id="instRankWrap" class="bg-[#151D30] border border-slate-800 rounded-2xl p-5 shadow-xl" hidden>
+        <h2 class="text-md font-bold text-slate-200 mb-4 flex items-center gap-2">📊 外資買賣超排行 (含ETF)</h2>
+        <div class="grid grid-cols-1 gap-4">
+          <div class="bg-[#0B0F19] rounded-xl p-4 border border-slate-800/80">
+            <h3 class="text-xs font-bold text-rose-400 mb-2 flex items-center gap-1">🔺 買超排行</h3>
+            <ol id="instBuyRank" class="space-y-1.5 text-xs font-mono text-slate-300 list-decimal pl-4"></ol>
+          </div>
+          <div class="bg-[#0B0F19] rounded-xl p-4 border border-slate-800/80">
+            <h3 class="text-xs font-bold text-emerald-400 mb-2 flex items-center gap-1">🔻 賣超排行</h3>
+            <ol id="instSellRank" class="space-y-1.5 text-xs font-mono text-slate-300 list-decimal pl-4"></ol>
+          </div>
+        </div>
       </section>
 
-      <section>
-        <h3>顯示方式</h3>
-        <div class="field">
-          <label for="colorMode">漲跌顏色</label>
-          <select id="colorMode">
+      <section id="riskPanel" class="bg-[#151D30] border border-slate-800 rounded-2xl p-5 shadow-xl" hidden>
+        <h2 class="text-md font-bold text-slate-200 mb-1 flex items-center gap-2">📋 注意／處置風險看板</h2>
+        <div class="text-[11px] text-slate-500 mb-3">持股與今日熱門股，依風險程度排序，方便盤後快速掃描。</div>
+        <div id="riskBoard" class="space-y-2"></div>
+      </section>
+    </aside>
+  </div>
+
+  <footer class="max-w-[1600px] mx-auto px-6 py-8 text-center text-xs text-slate-600 border-t border-slate-900 mt-12 leading-relaxed">
+    本頁所有數字與「參考」傾向僅供參考，<b>不是投資建議</b>，請自行判斷、風險自負。<br>
+    資料來源：FinMind、證交所、CMoney 股市同學會（公開資料）。
+  </footer>
+
+  <div class="overlay" id="settings" hidden>
+    <div class="sheet max-w-2xl mx-auto p-6 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-6">
+        <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">⚙️ 系統與持股設定</h2>
+        <button class="text-slate-400 hover:text-white text-lg p-1" id="closeSettings" aria-label="關閉">✕</button>
+      </div>
+
+      <section class="mb-6 bg-[#0B0F19] rounded-xl p-4 border border-slate-800">
+        <h3 class="text-sm font-bold text-slate-300 mb-3 flex items-center gap-1.5">📈 我的持股清單</h3>
+        <div id="holdingList" class="space-y-2 mb-4"></div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+          <input id="addCode" list="stockList" class="bg-[#151D30] text-xs text-slate-100 border border-slate-700 rounded-lg p-2 focus:outline-none focus:border-rose-500" placeholder="代號或名字（例：2330）" aria-label="股票代號" autocomplete="off">
+          <input id="addShares" type="number" min="0" step="1" class="bg-[#151D30] text-xs text-slate-100 border border-slate-700 rounded-lg p-2 focus:outline-none focus:border-rose-500" placeholder="張數" aria-label="張數">
+          <input id="addCost" type="number" min="0" step="0.01" class="bg-[#151D30] text-xs text-slate-100 border border-slate-700 rounded-lg p-2 focus:outline-none focus:border-rose-500" placeholder="成本/股" aria-label="成本">
+          <button class="bg-gradient-to-r from-rose-500 to-orange-500 text-white font-bold text-xs rounded-lg p-2 hover:opacity-90 transition-opacity" id="addBtn">新增股票</button>
+        </div>
+        <datalist id="stockList"></datalist>
+        <div class="text-[11px] text-slate-500 mt-2.5">任何上市櫃股票都能加。持股只存在這台裝置的本地瀏覽器（LocalStorage），不會上傳。</div>
+      </section>
+
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-[#0B0F19] rounded-xl p-4 border border-slate-800 flex flex-col gap-2">
+          <label for="colorMode" class="text-xs font-bold text-slate-400">漲跌視覺色彩</label>
+          <select id="colorMode" class="bg-[#151D30] text-xs text-slate-100 border border-slate-700 rounded-lg p-2 focus:outline-none">
             <option value="tw">台股習慣：漲紅、跌綠</option>
             <option value="intl">歐美習慣：漲綠、跌紅</option>
           </select>
         </div>
-        <div class="field">
-          <label for="unit">金額單位</label>
-          <select id="unit">
+        <div class="bg-[#0B0F19] rounded-xl p-4 border border-slate-800 flex flex-col gap-2">
+          <label for="unit" class="text-xs font-bold text-slate-400">儀表板金額單位</label>
+          <select id="unit" class="bg-[#151D30] text-xs text-slate-100 border border-slate-700 rounded-lg p-2 focus:outline-none">
             <option value="wan">用「萬」顯示</option>
             <option value="yuan">用「元」顯示</option>
           </select>
         </div>
       </section>
 
-      <section>
-        <button class="danger" id="resetBtn">清除所有設定與持股</button>
+      <section class="text-right">
+        <button class="text-xs font-semibold text-rose-400 hover:text-rose-300 border border-rose-500/30 hover:border-rose-500 bg-rose-500/5 px-4 py-2 rounded-lg transition-all" id="resetBtn">清除所有設定與持股</button>
       </section>
     </div>
   </div>
