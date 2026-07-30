@@ -1,30 +1,28 @@
 {
-  "updated": "2026-07-29",
+  "updated": "2026-07-30",
   "is_sample": false,
   "hot": [
     "3481",
-    "2409",
     "2303",
+    "2409",
     "6770",
-    "2610",
-    "2332",
-    "3231"
+    "3231",
+    "1303"
   ],
   "stocks": {
     "3481": {
       "name": "群創",
-      "price": 41.8,
+      "price": 41.4,
       "big_player": "buy",
-      "day_change_pct": -7.11,
-      "month_change_pct": -39.2,
-      "volume": 524233,
-      "foreign_net": -7748,
-      "trust_net": -247,
-      "dealer_net": -2202,
-      "total_net": -10197,
+      "day_change_pct": -0.96,
+      "month_change_pct": -38.6,
+      "volume": 510926,
+      "foreign_net": -2892,
+      "trust_net": 81,
+      "dealer_net": -1285,
+      "total_net": -4095,
       "buzz": null,
       "spark": [
-        53.3,
         58.6,
         64.4,
         66.0,
@@ -53,7 +51,8 @@
         49.5,
         47.35,
         45.0,
-        41.8
+        41.8,
+        41.4
       ],
       "notice": {
         "on_notice": false,
@@ -63,35 +62,34 @@
         "soonest": null,
         "soonest_worst": 4,
         "worst_dir": "down",
-        "stock_cum": -17.6,
-        "market_cum": -6.6,
-        "diff": -10.9,
-        "up": 69.3,
+        "stock_cum": -21.1,
+        "market_cum": -8.7,
+        "diff": -12.4,
+        "up": 68.51,
         "up_reach": false,
-        "down": 35.7,
+        "down": 35.29,
         "down_reach": false,
         "approx": false
       },
       "sentiment": {
-        "posts": 6,
-        "bull": 4,
-        "bear": 2
+        "posts": 12,
+        "bull": 11,
+        "bear": 0
       }
     },
     "6116": {
       "name": "彩晶",
-      "price": 11.95,
+      "price": 11.8,
       "big_player": "buy",
-      "day_change_pct": -7.36,
-      "month_change_pct": -39.0,
-      "volume": 52037,
-      "foreign_net": 2215,
+      "day_change_pct": -1.26,
+      "month_change_pct": -35.7,
+      "volume": 39053,
+      "foreign_net": 173,
       "trust_net": 0,
-      "dealer_net": -493,
-      "total_net": 1722,
+      "dealer_net": 106,
+      "total_net": 279,
       "buzz": null,
       "spark": [
-        16.6,
         18.25,
         18.8,
         19.95,
@@ -120,7 +118,8 @@
         13.8,
         13.25,
         12.9,
-        11.95
+        11.95,
+        11.8
       ],
       "notice": {
         "on_notice": false,
@@ -128,37 +127,36 @@
         "in10": 0,
         "to_disp": 3,
         "soonest": null,
-        "soonest_worst": 4,
+        "soonest_worst": 5,
         "worst_dir": "down",
-        "stock_cum": -17.6,
-        "market_cum": -6.6,
-        "diff": -10.9,
-        "up": 19.34,
+        "stock_cum": -19.5,
+        "market_cum": -8.7,
+        "diff": -10.8,
+        "up": 18.94,
         "up_reach": false,
-        "down": 9.96,
+        "down": 9.76,
         "down_reach": false,
         "approx": false
       },
       "sentiment": {
-        "posts": 1,
-        "bull": 5,
-        "bear": 1
+        "posts": 0,
+        "bull": 6,
+        "bear": 0
       }
     },
     "2303": {
       "name": "聯電",
-      "price": 102.5,
-      "big_player": "buy",
-      "day_change_pct": -9.69,
-      "month_change_pct": -37.7,
-      "volume": 271684,
-      "foreign_net": 39628,
-      "trust_net": -15490,
-      "dealer_net": -2140,
-      "total_net": 21998,
+      "price": 110.0,
+      "big_player": "flat",
+      "day_change_pct": 7.32,
+      "month_change_pct": -34.9,
+      "volume": 376329,
+      "foreign_net": -35486,
+      "trust_net": -3115,
+      "dealer_net": -675,
+      "total_net": -39276,
       "buzz": null,
       "spark": [
-        141.0,
         140.0,
         145.5,
         160.0,
@@ -187,45 +185,45 @@
         128.0,
         126.0,
         113.5,
-        102.5
+        102.5,
+        110.0
       ],
       "notice": {
         "on_notice": false,
         "consec": 0,
         "in10": 0,
         "to_disp": 3,
-        "soonest": 3,
-        "soonest_worst": null,
-        "worst_dir": null,
-        "stock_cum": -23.8,
-        "market_cum": -6.6,
-        "diff": -17.1,
-        "up": 183.48,
+        "soonest": null,
+        "soonest_worst": 5,
+        "worst_dir": "down",
+        "stock_cum": -20.9,
+        "market_cum": -8.7,
+        "diff": -12.2,
+        "up": 178.0,
         "up_reach": false,
-        "down": 94.52,
-        "down_reach": true,
+        "down": 94.18,
+        "down_reach": false,
         "approx": true
       },
       "sentiment": {
-        "posts": 13,
-        "bull": 5,
-        "bear": 2
+        "posts": 16,
+        "bull": 9,
+        "bear": 0
       }
     },
     "2409": {
       "name": "友達",
-      "price": 23.65,
-      "big_player": "buy",
-      "day_change_pct": -1.05,
-      "month_change_pct": -27.7,
-      "volume": 251725,
-      "foreign_net": 17554,
-      "trust_net": 94,
-      "dealer_net": -2541,
-      "total_net": 15107,
+      "price": 22.2,
+      "big_player": "flat",
+      "day_change_pct": -6.13,
+      "month_change_pct": -27.6,
+      "volume": 223972,
+      "foreign_net": -32704,
+      "trust_net": 46,
+      "dealer_net": 702,
+      "total_net": -31955,
       "buzz": null,
       "spark": [
-        23.9,
         26.25,
         28.15,
         30.95,
@@ -254,7 +252,8 @@
         25.5,
         23.9,
         23.9,
-        23.65
+        23.65,
+        22.2
       ],
       "notice": {
         "on_notice": false,
@@ -264,35 +263,34 @@
         "soonest": null,
         "soonest_worst": 5,
         "worst_dir": "down",
-        "stock_cum": -7.6,
-        "market_cum": -6.6,
-        "diff": -1.0,
-        "up": 34.06,
+        "stock_cum": -14.0,
+        "market_cum": -8.7,
+        "diff": -5.3,
+        "up": 34.65,
         "up_reach": false,
-        "down": 17.54,
+        "down": 17.85,
         "down_reach": false,
         "approx": false
       },
       "sentiment": {
-        "posts": 12,
-        "bull": 7,
-        "bear": 3
+        "posts": 4,
+        "bull": 8,
+        "bear": 0
       }
     },
     "6770": {
       "name": "力積電",
-      "price": 50.4,
+      "price": 49.55,
       "big_player": "sell",
-      "day_change_pct": -9.68,
-      "month_change_pct": -36.8,
-      "volume": 158698,
-      "foreign_net": 3429,
-      "trust_net": -39,
-      "dealer_net": -2150,
-      "total_net": 1240,
+      "day_change_pct": -1.69,
+      "month_change_pct": -33.3,
+      "volume": 192112,
+      "foreign_net": -2868,
+      "trust_net": 342,
+      "dealer_net": -607,
+      "total_net": -3133,
       "buzz": null,
       "spark": [
-        71.0,
         70.2,
         74.2,
         81.6,
@@ -321,7 +319,8 @@
         61.6,
         61.9,
         55.8,
-        50.4
+        50.4,
+        49.55
       ],
       "notice": {
         "on_notice": false,
@@ -331,169 +330,34 @@
         "soonest": 3,
         "soonest_worst": null,
         "worst_dir": null,
-        "stock_cum": -22.6,
-        "market_cum": -6.6,
-        "diff": -15.9,
-        "up": 89.63,
+        "stock_cum": -27.0,
+        "market_cum": -8.7,
+        "diff": -18.3,
+        "up": 87.12,
         "up_reach": false,
-        "down": 46.17,
+        "down": 44.88,
         "down_reach": true,
         "approx": true
       },
       "sentiment": {
-        "posts": 2,
-        "bull": 8,
-        "bear": 1
-      }
-    },
-    "2610": {
-      "name": "華航",
-      "price": 21.7,
-      "big_player": "buy",
-      "day_change_pct": -0.23,
-      "month_change_pct": -8.4,
-      "volume": 65660,
-      "foreign_net": 14106,
-      "trust_net": 509,
-      "dealer_net": -679,
-      "total_net": 13936,
-      "buzz": null,
-      "spark": [
-        21.2,
-        21.85,
-        22.0,
-        21.8,
-        22.3,
-        23.25,
-        24.2,
-        23.2,
-        23.1,
-        23.7,
-        22.55,
-        22.85,
-        22.55,
-        22.45,
-        22.0,
-        22.05,
-        21.4,
-        21.05,
-        20.4,
-        21.2,
-        20.9,
-        20.75,
-        20.95,
-        21.45,
-        21.35,
-        20.6,
-        20.5,
-        21.25,
-        21.75,
-        21.7
-      ],
-      "notice": {
-        "on_notice": false,
-        "consec": 0,
-        "in10": 0,
-        "to_disp": 3,
-        "soonest": null,
-        "soonest_worst": 5,
-        "worst_dir": "up",
-        "stock_cum": 1.2,
-        "market_cum": -6.6,
-        "diff": 7.8,
-        "up": 28.18,
-        "up_reach": false,
-        "down": 14.52,
-        "down_reach": false,
-        "approx": true
-      },
-      "sentiment": {
-        "posts": 1,
-        "bull": 8,
-        "bear": 1
-      }
-    },
-    "2332": {
-      "name": "友訊",
-      "price": 24.0,
-      "big_player": "sell",
-      "day_change_pct": 1.69,
-      "month_change_pct": 31.1,
-      "volume": 77016,
-      "foreign_net": -5623,
-      "trust_net": 0,
-      "dealer_net": 318,
-      "total_net": -5306,
-      "buzz": null,
-      "spark": [
-        16.6,
-        18.25,
-        20.05,
-        18.95,
-        18.35,
-        18.45,
-        18.1,
-        17.15,
-        17.3,
-        18.3,
-        17.5,
-        18.2,
-        20.0,
-        19.5,
-        19.95,
-        21.9,
-        24.05,
-        25.95,
-        24.05,
-        23.55,
-        22.5,
-        20.5,
-        20.65,
-        22.3,
-        23.9,
-        22.4,
-        22.1,
-        24.3,
-        23.6,
-        24.0
-      ],
-      "notice": {
-        "on_notice": false,
-        "consec": 0,
-        "in10": 0,
-        "to_disp": 3,
-        "soonest": null,
-        "soonest_worst": 5,
-        "worst_dir": "up",
-        "stock_cum": 7.6,
-        "market_cum": -6.6,
-        "diff": 14.3,
-        "up": 31.55,
-        "up_reach": false,
-        "down": 16.25,
-        "down_reach": false,
-        "approx": false
-      },
-      "sentiment": {
-        "posts": 1,
+        "posts": 8,
         "bull": 6,
-        "bear": 0
+        "bear": 1
       }
     },
     "3231": {
       "name": "緯創",
-      "price": 169.5,
+      "price": 160.0,
       "big_player": "buy",
-      "day_change_pct": -0.29,
-      "month_change_pct": 6.9,
-      "volume": 155521,
-      "foreign_net": 4023,
-      "trust_net": 1254,
-      "dealer_net": -818,
-      "total_net": 4458,
+      "day_change_pct": -5.6,
+      "month_change_pct": 0.3,
+      "volume": 82602,
+      "foreign_net": -19,
+      "trust_net": 420,
+      "dealer_net": -73,
+      "total_net": 328,
       "buzz": null,
       "spark": [
-        158.0,
         162.5,
         161.5,
         162.5,
@@ -522,7 +386,8 @@
         179.0,
         177.0,
         170.0,
-        169.5
+        169.5,
+        160.0
       ],
       "notice": {
         "on_notice": false,
@@ -532,124 +397,191 @@
         "soonest": null,
         "soonest_worst": 5,
         "worst_dir": "down",
-        "stock_cum": 13.4,
-        "market_cum": -6.6,
-        "diff": 20.0,
-        "up": 216.48,
+        "stock_cum": -2.4,
+        "market_cum": -8.7,
+        "diff": 6.3,
+        "up": 229.0,
         "up_reach": false,
-        "down": 119.55,
+        "down": 124.49,
         "down_reach": false,
         "approx": true
       },
       "sentiment": {
         "posts": 6,
-        "bull": 10,
+        "bull": 7,
+        "bear": 0
+      }
+    },
+    "1303": {
+      "name": "南亞",
+      "price": 145.0,
+      "big_player": "buy",
+      "day_change_pct": 2.47,
+      "month_change_pct": -20.8,
+      "volume": 140139,
+      "foreign_net": -8245,
+      "trust_net": 1343,
+      "dealer_net": -915,
+      "total_net": -7818,
+      "buzz": null,
+      "spark": [
+        126.5,
+        139.0,
+        152.5,
+        154.5,
+        156.0,
+        155.0,
+        148.0,
+        151.5,
+        166.5,
+        183.0,
+        197.0,
+        197.0,
+        185.0,
+        166.5,
+        182.0,
+        181.5,
+        199.5,
+        210.0,
+        227.5,
+        221.0,
+        199.0,
+        186.5,
+        195.5,
+        208.0,
+        197.0,
+        177.5,
+        174.0,
+        157.0,
+        141.5,
+        145.0
+      ],
+      "notice": {
+        "on_notice": true,
+        "consec": 2,
+        "in10": 2,
+        "to_disp": 1,
+        "soonest": 1,
+        "soonest_worst": null,
+        "worst_dir": null,
+        "stock_cum": -30.3,
+        "market_cum": -8.7,
+        "diff": -21.6,
+        "up": 246.25,
+        "up_reach": false,
+        "down": 133.96,
+        "down_reach": true,
+        "approx": false
+      },
+      "sentiment": {
+        "posts": 7,
+        "bull": 8,
         "bear": 0
       }
     }
   },
   "inst_buy_rank": [
     {
-      "code": "2303",
-      "name": "聯電",
-      "net": 39628
-    },
-    {
-      "code": "1303",
-      "name": "南亞",
-      "net": 25498
-    },
-    {
-      "code": "00712",
-      "name": "復華富時不動產",
-      "net": 21272
-    },
-    {
-      "code": "2409",
-      "name": "友達",
-      "net": 17554
-    },
-    {
       "code": "5880",
       "name": "合庫金",
-      "net": 17505
-    },
-    {
-      "code": "2610",
-      "name": "華航",
-      "net": 14106
-    },
-    {
-      "code": "2412",
-      "name": "中華電",
-      "net": 12934
-    },
-    {
-      "code": "2618",
-      "name": "長榮航",
-      "net": 12757
-    },
-    {
-      "code": "00919",
-      "name": "群益台灣精選高息",
-      "net": 11077
-    },
-    {
-      "code": "5876",
-      "name": "上海商銀",
-      "net": 10265
-    }
-  ],
-  "inst_sell_rank": [
-    {
-      "code": "00403A",
-      "name": "主動統一升級50",
-      "net": -144579
-    },
-    {
-      "code": "0050",
-      "name": "元大台灣50",
-      "net": -104923
-    },
-    {
-      "code": "00981A",
-      "name": "主動統一台股增長",
-      "net": -88742
-    },
-    {
-      "code": "00991A",
-      "name": "主動復華未來50",
-      "net": -58924
+      "net": 42650
     },
     {
       "code": "009816",
       "name": "凱基台灣TOP50",
-      "net": -58249
-    },
-    {
-      "code": "00405A",
-      "name": "主動富邦台灣龍耀",
-      "net": -40565
-    },
-    {
-      "code": "00992A",
-      "name": "主動群益科技創新",
-      "net": -31461
-    },
-    {
-      "code": "0056",
-      "name": "元大高股息",
-      "net": -15884
+      "net": 41360
     },
     {
       "code": "2344",
       "name": "華邦電",
-      "net": -15329
+      "net": 36320
     },
     {
-      "code": "00400A",
-      "name": "主動國泰動能高息",
-      "net": -14100
+      "code": "2618",
+      "name": "長榮航",
+      "net": 30788
+    },
+    {
+      "code": "2884",
+      "name": "玉山金",
+      "net": 28515
+    },
+    {
+      "code": "2834",
+      "name": "臺企銀",
+      "net": 27497
+    },
+    {
+      "code": "1216",
+      "name": "統一",
+      "net": 25435
+    },
+    {
+      "code": "2867",
+      "name": "三商壽",
+      "net": 19092
+    },
+    {
+      "code": "00992A",
+      "name": "主動群益科技創新",
+      "net": 16919
+    },
+    {
+      "code": "2892",
+      "name": "第一金",
+      "net": 14858
+    }
+  ],
+  "inst_sell_rank": [
+    {
+      "code": "0050",
+      "name": "元大台灣50",
+      "net": -60529
+    },
+    {
+      "code": "2303",
+      "name": "聯電",
+      "net": -35485
+    },
+    {
+      "code": "2317",
+      "name": "鴻海",
+      "net": -33608
+    },
+    {
+      "code": "2409",
+      "name": "友達",
+      "net": -32703
+    },
+    {
+      "code": "2382",
+      "name": "廣達",
+      "net": -27311
+    },
+    {
+      "code": "00981A",
+      "name": "主動統一台股增長",
+      "net": -16824
+    },
+    {
+      "code": "2332",
+      "name": "友訊",
+      "net": -11160
+    },
+    {
+      "code": "2337",
+      "name": "旺宏",
+      "net": -10175
+    },
+    {
+      "code": "00919",
+      "name": "群益台灣精選高息",
+      "net": -9457
+    },
+    {
+      "code": "00685L",
+      "name": "群益臺灣加權正2",
+      "net": -9392
     }
   ]
 }
