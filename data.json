@@ -74,9 +74,9 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 1,
-        "bull": 4,
-        "bear": 2
+        "posts": 0,
+        "bull": 3,
+        "bear": 0
       }
     },
     "6116": {
@@ -142,7 +142,7 @@
       },
       "sentiment": {
         "posts": 0,
-        "bull": 1,
+        "bull": 0,
         "bear": 0
       }
     },
@@ -209,7 +209,7 @@
       },
       "sentiment": {
         "posts": 1,
-        "bull": 5,
+        "bull": 6,
         "bear": 0
       }
     },
@@ -275,8 +275,8 @@
         "approx": false
       },
       "sentiment": {
-        "posts": 0,
-        "bull": 4,
+        "posts": 1,
+        "bull": 8,
         "bear": 0
       }
     },
@@ -343,7 +343,7 @@
       },
       "sentiment": {
         "posts": 0,
-        "bull": 2,
+        "bull": 1,
         "bear": 0
       }
     },
@@ -409,8 +409,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 2,
-        "bull": 9,
+        "posts": 1,
+        "bull": 6,
         "bear": 1
       }
     },
@@ -477,7 +477,7 @@
       },
       "sentiment": {
         "posts": 0,
-        "bull": 0,
+        "bull": 1,
         "bear": 0
       }
     },
@@ -543,8 +543,8 @@
         "approx": true
       },
       "sentiment": {
-        "posts": 1,
-        "bull": 6,
+        "posts": 0,
+        "bull": 3,
         "bear": 0
       }
     },
